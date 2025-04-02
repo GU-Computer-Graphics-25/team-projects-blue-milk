@@ -121,3 +121,11 @@ function createCrateBuilding(params, material) {
     let crateBuildingMesh = new THREE.Mesh(crateBuildingGeom, material);
     return crateBuildingMesh;
 }
+
+function createStairBuilding(params, material) {
+    // stairBuildingBaseWidth: 50,
+    // stairBuildingBaseHeight: 30,
+    // stairBuildingTopLength: 30,
+    // stairBuildingTopHeight: 20,
+    let stairBuildingObject = new THREE.Object3D();
+}

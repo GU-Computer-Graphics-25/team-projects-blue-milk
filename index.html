@@ -91,6 +91,12 @@
                     color: new THREE.Color("blue"),
                     side: THREE.DoubleSide,
                 }),
+                stairBuilding: new THREE.MeshPhongMaterial({
+                    specular: new THREE.Color("white"),
+                    shininess: 20,
+                    color: new THREE.Color("pink"),
+                    side: THREE.DoubleSide,
+                }),
             };
 
             const buildingParams = {
@@ -105,6 +111,11 @@
                 crateBuildingWidth: 20,
                 crateBuildingHeight: 20,
                 crateBuildingLength: 40,
+
+                stairBuildingBaseWidth: 50,
+                stairBuildingBaseHeight: 30,
+                stairBuildingTopLength: 30,
+                stairBuildingTopHeight: 20,
             };
 
             scene.add(createGroundScene(buildingParams, groundSceneMaterials));
