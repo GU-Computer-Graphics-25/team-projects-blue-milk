@@ -18,6 +18,7 @@
     <script src="./js/three-r95.all.js"></script>
     <script src="./js/OrbitControls-r95.js"></script>
     <script src="./js/tw-sp21.js"></script>
+    <script src="./js/SceneUtils.js"></script>
 </head>
 
 <body>
@@ -27,34 +28,44 @@
         // Add Global Parameters:
 
         var plainParams = {
-            width: 1,
-            height: 1,
-            wSegments: 1, // width segments
-            hSegments: 1, // height segments
+            width: 10,
+            height: 10,
+            wSegments: 10, // width segments
+            hSegments: 10, // height segments
         }
 
         // ================================================================
         // Add materials:
 
+        var sceneMaterials = [
+            new THREE.MeshBasicMaterial({
+                color: new THREE.Color("blue"), // color
+                side: THREE.DoubleSide, // sides
+            })
+        ];
+
         // ================================================================
         // Add functions:
 
         /**
-         * Make plain creates a template plane geometry, which acts as the
+         * MakePlain() creates a template plane geometry, which acts as the
          * desert floor of our scene.
          */
         function makePlain() {
 
             var params = plainParams;
 
-            var plain = new THREE.PlaneGeometry( 
+            var plainGeom = new THREE.PlaneGeometry( 
                 params.width,
                 params.height,
                 params.wSegments,
-                params.hSegments
+                params.hSegments,
             );
-            var 
-
+            var plainMesh = new THREE.Mesh( plainGeom, sceneMaterials[0] );
+            // Adjust plain as needed:
+            plainMesh.rotation.set( (Math.PI/2), 0, 0 );
+            // Return the completed plain:
+            return plainMesh;
         }
 
         // ----------------------------------------------------------------
@@ -69,6 +80,9 @@
         // ================================================================
         
         var scene = new THREE.Scene();
+
+        var desert = makePlain();
+        scene.add(desert);
 
         // ================================================================
         // Add renderer:
