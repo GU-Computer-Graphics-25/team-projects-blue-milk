@@ -15,6 +15,18 @@ function createGroundScene(params, materials) {
     );
     groundScene.add(centralBuilding);
 
+    let siloMesh1 = createSiloBuilding(params, materials.siloBuilding);
+    siloMesh1.position.set(50, params.siloBuildingHeight / 2, 30);
+    groundScene.add(siloMesh1);
+
+    let siloMesh2 = createSiloBuilding(params, materials.siloBuilding);
+    siloMesh2.position.set(-50, params.siloBuildingHeight / 2, -50);
+    groundScene.add(siloMesh2);
+
+    let siloMesh3 = createSiloBuilding(params, materials.siloBuilding);
+    siloMesh3.position.set(30, params.siloBuildingHeight / 2, 50);
+    groundScene.add(siloMesh3);
+
     return groundScene;
 }
 
@@ -54,4 +66,35 @@ function createCentralBuilding(params, material) {
     centralBuildingObject.add(centralBuildingBottomMesh);
 
     return centralBuildingObject;
+}
+
+function createSiloBuilding(params, material) {
+    let siloBuildingObject = new THREE.Object3D();
+    let siloTopGeom = new THREE.SphereGeometry(
+        params.siloBuildingRadius,
+        32,
+        16,
+        0,
+        2 * Math.PI,
+        0,
+        Math.PI / 2
+    );
+    let siloBottomGeom = new THREE.CylinderGeometry(
+        params.siloBuildingRadius,
+        params.siloBuildingRadius,
+        params.siloBuildingHeight,
+        32
+    );
+
+    let siloTopMesh = new THREE.Mesh(siloTopGeom, material);
+    siloTopMesh.position.set(
+        0,
+        params.siloBuildingHeight - params.siloBuildingRadius,
+        0
+    );
+    let siloBottomMesh = new THREE.Mesh(siloBottomGeom, material);
+
+    siloBuildingObject.add(siloTopMesh);
+    siloBuildingObject.add(siloBottomMesh);
+    return siloBuildingObject;
 }

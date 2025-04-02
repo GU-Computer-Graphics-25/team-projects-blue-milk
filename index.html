@@ -79,6 +79,12 @@
                     color: new THREE.Color("red"),
                     side: THREE.DoubleSide,
                 }),
+                siloBuilding: new THREE.MeshPhongMaterial({
+                    specular: new THREE.Color("white"),
+                    shininess: 20,
+                    color: new THREE.Color("green"),
+                    side: THREE.DoubleSide,
+                }),
             };
 
             const buildingParams = {
@@ -86,6 +92,9 @@
 
                 centralBuildingTopRadius: 20,
                 centralBuildingBottomLength: 40,
+
+                siloBuildingRadius: 10,
+                siloBuildingHeight: 20,
             };
 
             scene.add(createGroundScene(buildingParams, groundSceneMaterials));
