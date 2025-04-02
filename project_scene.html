@@ -21,14 +21,41 @@
 </head>
 
 <body>
-    <h1>Barn Demo</h1>
+    <h1>Project Scene</h1>
     <script>
         // ================================================================
         // Add Global Parameters:
 
+        var plainParams = {
+            width: 1,
+            height: 1,
+            wSegments: 1, // width segments
+            hSegments: 1, // height segments
+        }
+
+        // ================================================================
+        // Add materials:
 
         // ================================================================
         // Add functions:
+
+        /**
+         * Make plain creates a template plane geometry, which acts as the
+         * desert floor of our scene.
+         */
+        function makePlain() {
+
+            var params = plainParams;
+
+            var plain = new THREE.PlaneGeometry( 
+                params.width,
+                params.height,
+                params.wSegments,
+                params.hSegments
+            );
+            var 
+
+        }
 
         // ----------------------------------------------------------------
         // Object functions ( lights, meshes, etc. ):
@@ -68,7 +95,7 @@
 
 
 
-        
+
     </script>
 </body>
 
