@@ -15,9 +15,9 @@
         }
     </style>
 
-    <script src="./js/three-r95.all.js"></script>
-    <script src="./js/OrbitControls-r95.js"></script>
-    <script src="./js/tw-sp21.js"></script>
+    <script src="./js/three.js"></script>
+    <script src="./js/OrbitControls.js"></script>
+    <script src="./js/tw.js"></script>
     <script src="./js/SceneUtils.js"></script>
 </head>
 
@@ -28,8 +28,8 @@
         // Add Global Parameters:
 
         var plainParams = {
-            width: 10,
-            height: 10,
+            width: 30,
+            height: 30,
             wSegments: 10, // width segments
             hSegments: 10, // height segments
         }
@@ -39,7 +39,7 @@
 
         var sceneMaterials = [
             new THREE.MeshBasicMaterial({
-                color: new THREE.Color("blue"), // color
+                color: new THREE.Color("tan"), // color
                 side: THREE.DoubleSide, // sides
             })
         ];
@@ -94,14 +94,16 @@
         // ================================================================
         // Add camera setup:
 
-        TW.cameraSetup(renderer,
+        var state = TW.cameraSetup(renderer,
             scene,
             {
-                minx: 0, maxx: barnWidth,
-                miny: 0, maxy: barnHeight, // a bit low
-                minz: -barnDepth, maxz: 0
+                minx: -50, maxx: 30,
+                miny: 0, maxy: 30,
+                minz: -50, maxz: 30
             });
         
+        state.axisHelper.visible = true;
+        TW.render();
 
         // ================================================================
         // Add GUI:
