@@ -27,6 +27,19 @@ function createGroundScene(params, materials) {
     siloMesh3.position.set(30, params.siloBuildingHeight / 2, 50);
     groundScene.add(siloMesh3);
 
+    let crateBuilding1 = createCrateBuilding(params, materials.crateBuilding);
+    crateBuilding1.position.set(-50, params.crateBuildingHeight / 2, 0);
+    groundScene.add(crateBuilding1);
+
+    let crateBuilding2 = createCrateBuilding(params, materials.crateBuilding);
+    crateBuilding2.position.set(50, params.crateBuildingHeight / 2, -20);
+    groundScene.add(crateBuilding2);
+
+    let crateBuilding3 = createCrateBuilding(params, materials.crateBuilding);
+    crateBuilding3.rotateY(Math.PI / 2);
+    crateBuilding3.position.set(-20, params.crateBuildingHeight / 2, 40);
+    groundScene.add(crateBuilding3);
+
     return groundScene;
 }
 
@@ -97,4 +110,14 @@ function createSiloBuilding(params, material) {
     siloBuildingObject.add(siloTopMesh);
     siloBuildingObject.add(siloBottomMesh);
     return siloBuildingObject;
+}
+
+function createCrateBuilding(params, material) {
+    let crateBuildingGeom = new THREE.BoxGeometry(
+        params.crateBuildingWidth,
+        params.crateBuildingHeight,
+        params.crateBuildingLength
+    );
+    let crateBuildingMesh = new THREE.Mesh(crateBuildingGeom, material);
+    return crateBuildingMesh;
 }

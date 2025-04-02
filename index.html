@@ -85,6 +85,12 @@
                     color: new THREE.Color("green"),
                     side: THREE.DoubleSide,
                 }),
+                crateBuilding: new THREE.MeshPhongMaterial({
+                    specular: new THREE.Color("white"),
+                    shininess: 20,
+                    color: new THREE.Color("blue"),
+                    side: THREE.DoubleSide,
+                }),
             };
 
             const buildingParams = {
@@ -95,6 +101,10 @@
 
                 siloBuildingRadius: 10,
                 siloBuildingHeight: 20,
+
+                crateBuildingWidth: 20,
+                crateBuildingHeight: 20,
+                crateBuildingLength: 40,
             };
 
             scene.add(createGroundScene(buildingParams, groundSceneMaterials));
