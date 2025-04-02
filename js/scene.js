@@ -1,13 +1,25 @@
 function createGroundScene(params, materials) {
     let groundScene = new THREE.Object3D();
+
     let basePlateGeom = new THREE.PlaneGeometry(
         params.basePlateWidth,
         params.basePlateWidth
     );
     let basePlateMesh = new THREE.Mesh(basePlateGeom, materials.basePlate);
     basePlateMesh.rotateX(Math.PI / 2);
+    groundScene.add(basePlateMesh);
 
-    let centralBuilding = new THREE.Object3D();
+    let centralBuilding = createCentralBuilding(
+        params,
+        materials.centralBuilding
+    );
+    groundScene.add(centralBuilding);
+
+    return groundScene;
+}
+
+function createCentralBuilding(params, material) {
+    let centralBuildingObject = new THREE.Object3D();
     let centralBuildingTopGeom = new THREE.SphereGeometry(
         params.centralBuildingTopRadius,
         32,
@@ -19,7 +31,7 @@ function createGroundScene(params, materials) {
     );
     let centralBuildingTopMesh = new THREE.Mesh(
         centralBuildingTopGeom,
-        materials.centralBuilding
+        material
     );
     centralBuildingTopMesh.position.set(0, params.centralBuildingTopRadius, 0);
 
@@ -30,7 +42,7 @@ function createGroundScene(params, materials) {
     );
     let centralBuildingBottomMesh = new THREE.Mesh(
         centralBuildingBottomGeom,
-        materials.centralBuilding
+        material
     );
     centralBuildingBottomMesh.position.set(
         0,
@@ -38,10 +50,8 @@ function createGroundScene(params, materials) {
         0
     );
 
-    centralBuilding.add(centralBuildingTopMesh);
-    centralBuilding.add(centralBuildingBottomMesh);
+    centralBuildingObject.add(centralBuildingTopMesh);
+    centralBuildingObject.add(centralBuildingBottomMesh);
 
-    groundScene.add(basePlateMesh);
-    groundScene.add(centralBuilding);
-    return groundScene;
+    return centralBuildingObject;
 }
