@@ -33,6 +33,9 @@
             wSegments: 10, // width segments
             hSegments: 10, // height segments
         }
+        var deathStarParams = {
+
+        }
 
         // ================================================================
         // Add materials:
@@ -76,6 +79,24 @@
             return plainMesh;
         }
 
+        /**
+         * function makeDeathStar() creates the death star, by generating
+         * a new Object3D and calling sub-functions to add meshes into it.
+         */
+        function makeDeathStar(){
+
+            var params = deathStarParams;
+
+            var deathStar = new THREE.Object3D();
+
+            // Test Death star:
+            var testStarGeom = new THREE.SphereGeometry(10);
+            var testStarMesh = new THREE.Mesh( testStarGeom, sceneMaterials[1] );
+            deathStar.add( testStarMesh );
+
+            return deathStar;
+        }
+
         
 
         // ----------------------------------------------------------------
@@ -90,6 +111,9 @@
 
         var desert = makePlain();
         scene.add(desert);
+
+        var deathStar = makeDeathStar();
+        scene.add(deathStar);
 
         // ================================================================
         // Add renderer:
