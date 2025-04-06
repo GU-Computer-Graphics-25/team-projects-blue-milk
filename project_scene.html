@@ -34,7 +34,11 @@
             hSegments: 10, // height segments
         }
         var deathStarParams = {
-
+            // Outer shell:
+            hullRadius: 10,
+            hullWSegments: 32,
+            hullHSegments: 16,
+            hullThetaStart: 3,
         }
 
         // ================================================================
@@ -90,7 +94,11 @@
             var deathStar = new THREE.Object3D();
 
             // Test Death star:
-            var testStarGeom = new THREE.SphereGeometry(10);
+            var testStarGeom = new THREE.SphereGeometry( 
+                params.hullRadius, // radius
+                params.hullWSegments, // width segments
+                params.hullHSegments // height segments
+            );
             var testStarMesh = new THREE.Mesh( testStarGeom, sceneMaterials[1] );
             deathStar.add( testStarMesh );
 
