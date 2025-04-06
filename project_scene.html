@@ -169,6 +169,14 @@
 
         //updateDeathStar();
 
+        var coneTest = new THREE.ConeGeometry( 5, 10);
+        var coneMesh = new THREE.Mesh( coneTest, sceneMaterials[1] );
+        scene.add(coneMesh);
+
+        coneMesh.position.set( 10, 10, -20);
+        coneMesh.lookAt( 0, 0, 0, );
+
+
         // ================================================================
         // Add renderer:
 
