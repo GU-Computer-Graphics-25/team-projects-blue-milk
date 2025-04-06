@@ -38,8 +38,14 @@
         // Add materials:
 
         var sceneMaterials = [
+            // Material for Tatooine's desert floor.
             new THREE.MeshBasicMaterial({
                 color: new THREE.Color("tan"), // color
+                side: THREE.DoubleSide, // sides
+            }),
+            // Material for the death-star frame.
+            new THREE.MeshBasicMaterial({
+                color: new THREE.Color("grey"), // color
                 side: THREE.DoubleSide, // sides
             })
         ];
