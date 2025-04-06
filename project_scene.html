@@ -38,7 +38,7 @@
             hullRadius: 10,
             hullWSegments: 32,
             hullHSegments: 16,
-            hullThetaStart: 3,
+            hullThetaStart: 0.3,
         }
 
         // ================================================================
@@ -53,7 +53,7 @@
             // Material for the death-star frame.
             new THREE.MeshBasicMaterial({
                 color: new THREE.Color("grey"), // color
-                side: THREE.DoubleSide, // sides
+                side: THREE.SingleSide, // sides: show outside surface
             })
         ];
 
@@ -97,8 +97,13 @@
             var testStarGeom = new THREE.SphereGeometry( 
                 params.hullRadius, // radius
                 params.hullWSegments, // width segments
-                params.hullHSegments // height segments
+                params.hullHSegments, // height segments
+                0, // phiStart ( default )
+                (Math.PI * 2), //phiLength ( default )
+                params.hullThetaStart, // thetaStart: controls hole in the sphere.
+                Math.PI, // thetaLength ( default )
             );
+
             var testStarMesh = new THREE.Mesh( testStarGeom, sceneMaterials[1] );
             deathStar.add( testStarMesh );
 
