@@ -142,6 +142,18 @@
         // ----------------------------------------------------------------
         // GUI / animation functions:
 
+        /**
+         * updateDeathStar() takes the parameters for the Death Star's
+         * position and updates them, then re-renders the scene accordingly.
+         * This will be used for animation purposes.
+         */
+        function updateDeathStar() {
+
+            
+            //deathStar.rotation.set( 0, 0, (Math.PI/3) );
+            deathStar.position.set( 0, 20, 0);
+            deathStar.lookAt( 0, 0, 0);
+        }
 
         // ================================================================
         //                 BUILD SCENE:
@@ -153,7 +165,9 @@
         scene.add(desert);
 
         var deathStar = makeDeathStar();
-        scene.add(deathStar);
+        //scene.add(deathStar);
+
+        //updateDeathStar();
 
         // ================================================================
         // Add renderer:
