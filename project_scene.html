@@ -113,6 +113,7 @@
                 Math.PI, // thetaLength ( default )
             );
             var hullMesh = new THREE.Mesh( hullGeom, sceneMaterials[1] );
+            hullMesh.rotation.set( Math.PI/2, 0, 0); // align mesh to Z axis.
 
             // Add Death Star cannon:
             var cannonGeom = new THREE.SphereGeometry(
@@ -127,8 +128,8 @@
             );
             var cannonMesh = new THREE.Mesh( cannonGeom, sceneMaterials[2] );
             // Adjust cannon position:
-            cannonMesh.position.set( 0, (params.hullRadius * 1.911), 0);
-            cannonMesh.rotation.set( 0, 0, Math.PI); // Rotate the cannon 180 degrees.
+            cannonMesh.position.set( 0, 0, (params.hullRadius * 1.911));
+            cannonMesh.rotation.set( (-Math.PI/2), 0, 0); // Fit cannon
 
             // combine meshes into the death star:
             deathStar.add( hullMesh );
@@ -151,7 +152,7 @@
 
             
             //deathStar.rotation.set( 0, 0, (Math.PI/3) );
-            deathStar.position.set( 0, 20, 0);
+            deathStar.position.set( 20, 20, -20);
             deathStar.lookAt( 0, 0, 0);
         }
 
@@ -165,17 +166,18 @@
         scene.add(desert);
 
         var deathStar = makeDeathStar();
-        //scene.add(deathStar);
+        scene.add(deathStar);
 
-        //updateDeathStar();
+        updateDeathStar();
 
+        /*
         var coneTest = new THREE.ConeGeometry( 5, 10);
         var coneMesh = new THREE.Mesh( coneTest, sceneMaterials[1] );
         scene.add(coneMesh);
 
         coneMesh.position.set( 10, 10, -20);
         coneMesh.lookAt( 0, 0, 0, );
-
+        */
 
         // ================================================================
         // Add renderer:
