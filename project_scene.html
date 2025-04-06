@@ -41,7 +41,7 @@
             hullThetaStart: 0.3,
             // cannon:
             //cannonThetaStart: -0.3,
-            cannonThetaLength: -0.3,
+            cannonThetaLength: -0.3, // Inverse of the theta start on the hull.
             //cannonThetaLength: -Math.PI * 4,
         }
 
@@ -121,15 +121,14 @@
                 params.hullHSegments, // height segments
                 0, // phiStart ( default )
                 (Math.PI * 2), //phiLength ( default )
-                0,
-                //params.cannonThetaStart, // thetaStart: controls hole in the sphere.
+                0, // thetaStart (default )
                 params.cannonThetaLength, // thetaLength: controls where sphere
                                           // starts generating length-wise.
             );
             var cannonMesh = new THREE.Mesh( cannonGeom, sceneMaterials[2] );
             // Adjust cannon position:
             cannonMesh.position.set( 0, (params.hullRadius * 1.911), 0);
-            cannonMesh.rotation.set( 0, 0, Math.PI);
+            cannonMesh.rotation.set( 0, 0, Math.PI); // Rotate the cannon 180 degrees.
 
             // combine meshes into the death star:
             deathStar.add( hullMesh );
