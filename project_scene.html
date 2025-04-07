@@ -49,19 +49,24 @@
         // Add materials:
 
         var sceneMaterials = [
-            // Material for Tatooine's desert floor.
+            // 0. Material for Tatooine's desert floor.
             new THREE.MeshBasicMaterial({
                 color: new THREE.Color("tan"), // color
                 side: THREE.DoubleSide, // sides
             }),
-            // Material for the death-star frame ("hull").
+            // 1. Material for the death-star frame ("hull").
             new THREE.MeshBasicMaterial({
                 color: new THREE.Color("darkgrey"), // color
                 side: THREE.SingleSide, // sides: show outside surface
             }),
-            // Material for the concave sphere / cannon of the Death Star
+            // 2. Material for the concave sphere / cannon of the Death Star
             new THREE.MeshBasicMaterial({
                 color: new THREE.Color("grey"),
+                side: THREE.DoubleSide,
+            }),
+            // 3. Phong material for testing lights:
+            new THREE.MeshPhongMaterial({
+                color: new THREE.Color("lightgreen"),
                 side: THREE.DoubleSide,
             }),
         ];
@@ -85,7 +90,7 @@
                 params.wSegments,
                 params.hSegments,
             );
-            var plainMesh = new THREE.Mesh( plainGeom, sceneMaterials[0] );
+            var plainMesh = new THREE.Mesh( plainGeom, sceneMaterials[3] );
             // Adjust plain as needed:
             plainMesh.rotation.set( (Math.PI/2), 0, 0 );
             // Return the completed plain:
