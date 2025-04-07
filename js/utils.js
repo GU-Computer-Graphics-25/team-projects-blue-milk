@@ -19,3 +19,11 @@ function render() {
     // a render function; assume global variables scene, renderer, and camera
     renderer.render(scene, camera);
 }
+
+function addFaceCoordinates(as, at, bs, bt, cs, ct) {
+    return [
+        new THREE.Vector2(as, at),
+        new THREE.Vector2(bs, bt),
+        new THREE.Vector2(cs, ct),
+    ];
+}

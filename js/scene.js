@@ -33,6 +33,7 @@ function createGroundScene(params, materials) {
 
     let crateBuilding2 = createCrateBuilding(params, materials.crateBuilding);
     crateBuilding2.position.set(50, params.crateBuildingHeight / 2, -20);
+    crateBuilding2.rotateY(Math.PI);
     groundScene.add(crateBuilding2);
 
     let crateBuilding3 = createCrateBuilding(params, materials.crateBuilding);
@@ -124,7 +125,28 @@ function createCrateBuilding(params, material) {
         params.crateBuildingHeight,
         params.crateBuildingLength
     );
+    crateBuildingGeom.faceVertexUvs[0] = [
+        // FRONT
+        addFaceCoordinates(0.25, 0.75, 0.25, 0.5, 0.75, 0.75), // 021
+        addFaceCoordinates(0.25, 0.5, 0.75, 0.5, 0.75, 0.75), // 231
+        // BACK
+        addFaceCoordinates(0.25, 0.25, 0.25, 0, 0.75, 0.25), // 465
+        addFaceCoordinates(0.25, 0, 0.75, 0, 0.75, 0.25), // 675
+        // TOP
+        addFaceCoordinates(0.75, 1, 0.25, 1, 0.75, 0.75), // 451
+        addFaceCoordinates(0.25, 1, 0.25, 0.75, 0.75, 0.75), // 501
+        // BOTTOM
+        addFaceCoordinates(0.25, 0.25, 0.75, 0.25, 0.25, 0.5), // 762
+        addFaceCoordinates(0.75, 0.25, 0.75, 0.5, 0.25, 0.5), // 632
+        // LEFT
+        addFaceCoordinates(0, 0.75, 0, 0.5, 0.25, 0.75), // 570
+        addFaceCoordinates(0, 0.5, 0.25, 0.5, 0.25, 0.75), // 720
+        // RIGHT
+        addFaceCoordinates(0.75, 0.75, 0.75, 0.5, 1, 0.75), // 134
+        addFaceCoordinates(0.75, 0.5, 1, 0.5, 1, 0.75), // 364
+    ];
     let crateBuildingMesh = new THREE.Mesh(crateBuildingGeom, material);
+    console.log(crateBuildingGeom);
     return crateBuildingMesh;
 }
 

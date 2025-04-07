@@ -59,12 +59,14 @@
             // Add ambient light source
             let ambLight = new THREE.AmbientLight(
                 new THREE.Color("white"),
-                0.5
+                0.75
             );
 
             scene.add(ambLight);
             scene.add(camera);
             scene.add(ah); //add axishelper to scene -- created as a global variable
+
+            let loader = new THREE.TextureLoader();
 
             const groundSceneMaterials = {
                 basePlate: new THREE.MeshPhongMaterial({
@@ -88,8 +90,9 @@
                 crateBuilding: new THREE.MeshPhongMaterial({
                     specular: new THREE.Color("white"),
                     shininess: 20,
-                    color: new THREE.Color("blue"),
+                    color: new THREE.Color("white"),
                     side: THREE.DoubleSide,
+                    map: loader.load("static/crateBuiding.png", render),
                 }),
                 stairBuilding: new THREE.MeshPhongMaterial({
                     specular: new THREE.Color("white"),
