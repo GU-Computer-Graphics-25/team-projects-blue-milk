@@ -174,6 +174,10 @@
             var laser = addLaser();
             deathStar.add(laser);
 
+            // Adjust base merging lasers to align with the cannon
+            laser.rotation.set( (Math.PI/2), 0, 0)
+            laser.position.set( 0, 0, ((deathStarParams.hullRadius * 1.87)/2));
+
             return deathStar;
         }
 
@@ -186,30 +190,27 @@
 
             var params = laserParams;
 
-            var laserBase = new THREE.Object3D();
+            var laser = new THREE.Object3D();
 
             // Make the 8-beam conjoining base of the laser from a cone:
-            var laserMergeGeom = new THREE.ConeGeometry( 
-                params.laserMergeRadius, // radius
+            var laserBaseGeom = new THREE.ConeGeometry( 
+                (deathStarParams.hullThetaStart * deathStarParams.hullRadius) + 0.1, // radius
+                //params.laserMergeRadius, // radius
                 params.laserMergeHeight, // height
                 params.laserMergeRSegs, // radial segments
                 params.laserMergeHSegs, // height segments
                 params.laserMergeOpenEnded, // open-ended.
             );
-            var laserMergeMesh = new THREE.Mesh( laserMergeGeom, sceneMaterials[3] );
-            laserMergeMesh.position.set( 0, (params.laserMergeHeight/2), 0);
-            laserBase.add( laserMergeMesh );
+            var laserBaseMesh = new THREE.Mesh( laserBaseGeom, sceneMaterials[3] );
+            laserBaseMesh.position.set( 0, (params.laserMergeHeight/2), 0);
+            laser.add( laserBaseMesh );
 
             // Add illumination to the merging lasers.
             var baseLight = makePointLight("green");
             baseLight.position.set( 0, (params.laserMergeHeight/2), 0);
-            laserBase.add(baseLight);
+            laser.add(baseLight);
 
-            // Adjust base merging lasers to align with the cannon
-            laserBase.rotation.set( (Math.PI/2), 0, 0)
-            laserBase.position.set( 0, 0, (deathStarParams.hullRadius * 1.911)/2);
-
-            return laserBase;
+            return laser;
         }
 
          // ----------------------------------------------------------------
