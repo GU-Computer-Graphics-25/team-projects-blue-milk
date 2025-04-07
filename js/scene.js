@@ -40,6 +40,12 @@ function createGroundScene(params, materials) {
     crateBuilding3.position.set(-20, params.crateBuildingHeight / 2, 40);
     groundScene.add(crateBuilding3);
 
+    let stairBuilding = createStairBuilding(params, materials.stairBuilding);
+    stairBuilding.position.set(0, params.stairBuildingBaseHeight / 2, -60);
+    stairBuilding.rotateY(Math.PI);
+
+    groundScene.add(stairBuilding);
+
     return groundScene;
 }
 
@@ -123,9 +129,26 @@ function createCrateBuilding(params, material) {
 }
 
 function createStairBuilding(params, material) {
-    // stairBuildingBaseWidth: 50,
-    // stairBuildingBaseHeight: 30,
-    // stairBuildingTopLength: 30,
-    // stairBuildingTopHeight: 20,
     let stairBuildingObject = new THREE.Object3D();
+    let stairBuildingBaseGeom = new THREE.BoxGeometry(
+        params.stairBuildingBaseWidth,
+        params.stairBuildingBaseHeight,
+        params.stairBuildingBaseWidth
+    );
+    let stairBuildingBaseMesh = new THREE.Mesh(stairBuildingBaseGeom, material);
+
+    let stairBuildingTopGeom = new THREE.BoxGeometry(
+        params.stairBuildingBaseWidth,
+        params.stairBuildingTopHeight,
+        params.stairBuildingTopLength
+    );
+    let stairBuildingTopMesh = new THREE.Mesh(stairBuildingTopGeom, material);
+
+    stairBuildingTopMesh.position.set(
+        0,
+        (params.stairBuildingBaseHeight + params.stairBuildingTopHeight) / 2,
+        (params.stairBuildingBaseWidth - params.stairBuildingTopLength) / 2
+    );
+    stairBuildingObject.add(stairBuildingBaseMesh, stairBuildingTopMesh);
+    return stairBuildingObject;
 }
