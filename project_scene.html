@@ -77,6 +77,7 @@
                 emissiveIntensity: 255.0,
                 transparent: true,
                 opacity: 0.5,
+                wireframe: true,
             }),
         ];
 
@@ -219,7 +220,7 @@
         var scene = new THREE.Scene();
 
         var ambientLight = makeAmbientLight();
-        scene.add(ambientLight);
+        //scene.add(ambientLight);
 
         var testPointLight = makePointLight("grey");
         testPointLight.position.set( 0, 15, 0);
