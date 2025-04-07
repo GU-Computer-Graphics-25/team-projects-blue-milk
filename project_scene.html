@@ -51,6 +51,8 @@
             laserMergeRSegs: 8, // Radial segments
             laserMergeHSegs: 1, // Height  segments
             laserMergeOpenEnded: true,
+            // laserBeam base:
+            beamBaseRadius: 0.5,
         }
         var pointLightParams = {
             intensity: 1,
@@ -77,7 +79,7 @@
                 color: new THREE.Color("grey"),
                 side: THREE.DoubleSide,
             }),
-            // 3. Phong material for testing lights:
+            // 3. Phong material used for the 8-laser base of the Death Star:
             new THREE.MeshPhongMaterial({
                 color: new THREE.Color("lightgreen"),
                 side: THREE.DoubleSide,
@@ -86,6 +88,15 @@
                 transparent: true,
                 opacity: 0.5,
                 wireframe: true,
+            }),
+            // 4. Phong material used for the main laserbeam of the Death Star:
+            new THREE.MeshPhongMaterial({
+                color: new THREE.Color("lightgreen"),
+                side: THREE.DoubleSide,
+                emissive: new THREE.Color("green"),
+                emissiveIntensity: 255.0,
+                transparent: true,
+                opacity: 0.5,
             }),
         ];
 
@@ -207,8 +218,14 @@
 
             // Add illumination to the merging lasers.
             var baseLight = makePointLight("green");
-            baseLight.position.set( 0, (params.laserMergeHeight/2), 0);
+            baseLight.position.set( 0, (params.laserMergeHeight), 0);
             laser.add(baseLight);
+
+            // Add conjoining point of all 8 lasers:
+            var beamBaseGeom = new THREE.SphereGeometry( params.beamBaseRadius, 16 );
+            var beamBaseMesh = new THREE.Mesh( beamBaseGeom, sceneMaterials[4] );
+            beamBaseMesh.position.set( 0, (params.laserMergeHeight), 0);
+            laser.add( beamBaseMesh );
 
             return laser;
         }
