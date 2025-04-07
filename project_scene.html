@@ -34,15 +34,23 @@
             hSegments: 10, // height segments
         }
         var deathStarParams = {
-            // Outer shell (hull):
+            // ----- Outer shell (hull): ------
             hullRadius: 10,
             hullWSegments: 32,
             hullHSegments: 16,
             hullThetaStart: 0.3,
-            // cannon:
+            // ----- cannon: ------------------
             //cannonThetaStart: -0.3,
             cannonThetaLength: -0.3, // Inverse of the theta start on the hull.
             //cannonThetaLength: -Math.PI * 4,
+        }
+        var laserParams = {
+            // cone base ( 8 merged lasers ):
+            laserMergeRadius: 2, 
+            laserMergeHeight: 4,
+            laserMergeRSegs: 8, // Radial segments
+            laserMergeHSegs: 1, // Height  segments
+            laserMergeOpenEnded: true,
         }
         var pointLightParams = {
             intensity: 1,
@@ -163,7 +171,40 @@
             deathStar.add( cannonMesh );
             deathStar.add( ringMesh );
 
+            var laser = addLaser();
+            deathStar.add(laser);
+
             return deathStar;
+        }
+
+        /**
+         * addLaser() creates the laser the Death Star will shoot. It is comprised
+         * of a cone representing 8 joining lasers at the base, as well as one
+         * main laser which can be adjusted and illuminated dynamically.
+         */
+        function addLaser() {
+
+            var params = laserParams;
+
+            var laser = new THREE.Object3D();
+
+            // Make the 8-beam conjoining base of the laser from a cone:
+            var laserMergeGeom = new THREE.ConeGeometry( 
+                params.laserMergeRadius, // radius
+                params.laserMergeHeight, // height
+                params.laserMergeRSegs, // radial segments
+                params.laserMergeHSegs, // height segments
+                params.laserMergeOpenEnded, // open-ended.
+            );
+            var laserMergeMesh = new THREE.Mesh( laserMergeGeom, sceneMaterials[3] );
+            laser.add( laserMergeMesh );
+
+            var baseLight = makePointLight("green");
+            laser.add(testPointLight);
+
+            laser.position.set( 0, 0, 0);
+
+            return laser;
         }
 
          // ----------------------------------------------------------------
@@ -220,31 +261,19 @@
         var scene = new THREE.Scene();
 
         var ambientLight = makeAmbientLight();
-        //scene.add(ambientLight);
+        scene.add(ambientLight);
 
         var testPointLight = makePointLight("grey");
         testPointLight.position.set( 0, 15, 0);
         scene.add(testPointLight);
 
         var desert = makePlain();
-        scene.add(desert);
+        //scene.add(desert);
 
         var deathStar = makeDeathStar();
         scene.add(deathStar);
 
-        updateDeathStar();
-
-        
-        var testCone = new THREE.Object3D();
-        var coneTest = new THREE.ConeGeometry( 5, 10);
-        var coneMesh = new THREE.Mesh( coneTest, sceneMaterials[3] );
-        testCone.add(coneMesh);
-        var testPointLight = makePointLight("green");
-        testCone.add(testPointLight);
-
-        testCone.position.set( 10, 10, -20);
-        testCone.lookAt( 0, 0, 0, );
-        scene.add(testCone);
+        //updateDeathStar();
         
 
         // ================================================================
