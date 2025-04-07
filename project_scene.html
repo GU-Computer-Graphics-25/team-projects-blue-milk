@@ -131,9 +131,22 @@
             cannonMesh.position.set( 0, 0, (params.hullRadius * 1.911));
             cannonMesh.rotation.set( (-Math.PI/2), 0, 0); // Fit cannon
 
+            // Add Death Star ring:
+            var ringGeometry = new THREE.CylinderGeometry(
+                params.hullRadius, // radiusTop
+                params.hullRadius, // radiusBottom
+                0.25, // height
+                64, // radialSegments
+                1, // heightSegments
+                true, // open-ended
+            );
+            var ringMesh = new THREE.Mesh( ringGeometry, sceneMaterials[2] );
+            ringMesh.rotation.set( (Math.PI/7), 0 ,0);
+
             // combine meshes into the death star:
             deathStar.add( hullMesh );
             deathStar.add( cannonMesh );
+            deathStar.add( ringMesh );
 
             return deathStar;
         }
