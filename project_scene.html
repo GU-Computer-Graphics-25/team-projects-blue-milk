@@ -151,6 +151,21 @@
             return deathStar;
         }
 
+         // ----------------------------------------------------------------
+        // Lighting functions:
+        // This is where we will add the ambient light, the point lights from
+        // the twin suns, and the directional/spotlight from the laser.
+
+        /**
+         * makeAmbientLight() generates a new ambient light to illuminate the scene.
+         */
+        function makeAmbientLight() {
+            
+            var ambientLight = new THREE.AmbientLight();
+
+            return ambientLight;
+        }
+
         
 
         // ----------------------------------------------------------------
@@ -163,7 +178,6 @@
          */
         function updateDeathStar() {
 
-            
             //deathStar.rotation.set( 0, 0, (Math.PI/3) );
             deathStar.position.set( 20, 20, -20);
             deathStar.lookAt( 0, 0, 0);
@@ -174,6 +188,9 @@
         // ================================================================
         
         var scene = new THREE.Scene();
+
+        var ambientLight = makeAmbientLight();
+        scene.add(ambientLight);
 
         var desert = makePlain();
         scene.add(desert);
