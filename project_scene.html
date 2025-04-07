@@ -50,17 +50,17 @@
 
         var sceneMaterials = [
             // 0. Material for Tatooine's desert floor.
-            new THREE.MeshBasicMaterial({
+            new THREE.MeshPhongMaterial({
                 color: new THREE.Color("tan"), // color
                 side: THREE.DoubleSide, // sides
             }),
             // 1. Material for the death-star frame ("hull").
-            new THREE.MeshBasicMaterial({
+            new THREE.MeshPhongMaterial({
                 color: new THREE.Color("darkgrey"), // color
                 side: THREE.SingleSide, // sides: show outside surface
             }),
             // 2. Material for the concave sphere / cannon of the Death Star
-            new THREE.MeshBasicMaterial({
+            new THREE.MeshPhongMaterial({
                 color: new THREE.Color("grey"),
                 side: THREE.DoubleSide,
             }),
@@ -90,7 +90,7 @@
                 params.wSegments,
                 params.hSegments,
             );
-            var plainMesh = new THREE.Mesh( plainGeom, sceneMaterials[3] );
+            var plainMesh = new THREE.Mesh( plainGeom, sceneMaterials[0] );
             // Adjust plain as needed:
             plainMesh.rotation.set( (Math.PI/2), 0, 0 );
             // Return the completed plain:
@@ -171,6 +171,16 @@
             return ambientLight;
         }
 
+        /**
+         * makePointLight() generates a new point light. Used with the twin suns
+         * of the scene.
+         */
+        function makePointLight() {
+
+            var pointLight = new THREE.PointLight();
+
+            return pointLight;
+        }
         
 
         // ----------------------------------------------------------------
@@ -195,7 +205,11 @@
         var scene = new THREE.Scene();
 
         var ambientLight = makeAmbientLight();
-        scene.add(ambientLight);
+        //scene.add(ambientLight);
+
+        var testPointLight = makePointLight();
+        testPointLight.position.set( 0, 15, 0);
+        scene.add(testPointLight);
 
         var desert = makePlain();
         scene.add(desert);
