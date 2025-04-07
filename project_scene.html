@@ -186,7 +186,7 @@
 
             var params = laserParams;
 
-            var laser = new THREE.Object3D();
+            var laserBase = new THREE.Object3D();
 
             // Make the 8-beam conjoining base of the laser from a cone:
             var laserMergeGeom = new THREE.ConeGeometry( 
@@ -197,14 +197,19 @@
                 params.laserMergeOpenEnded, // open-ended.
             );
             var laserMergeMesh = new THREE.Mesh( laserMergeGeom, sceneMaterials[3] );
-            laser.add( laserMergeMesh );
+            laserMergeMesh.position.set( 0, (params.laserMergeHeight/2), 0);
+            laserBase.add( laserMergeMesh );
 
+            // Add illumination to the merging lasers.
             var baseLight = makePointLight("green");
-            laser.add(testPointLight);
+            baseLight.position.set( 0, (params.laserMergeHeight/2), 0);
+            laserBase.add(baseLight);
 
-            laser.position.set( 0, 0, 0);
+            // Adjust base merging lasers to align with the cannon
+            laserBase.rotation.set( (Math.PI/2), 0, 0)
+            laserBase.position.set( 0, 0, (deathStarParams.hullRadius * 1.911)/2);
 
-            return laser;
+            return laserBase;
         }
 
          // ----------------------------------------------------------------
