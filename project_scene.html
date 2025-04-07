@@ -44,6 +44,11 @@
             cannonThetaLength: -0.3, // Inverse of the theta start on the hull.
             //cannonThetaLength: -Math.PI * 4,
         }
+        var pointLightParams = {
+            intensity: 1,
+            distance: 0,
+            decay: 2,
+        }
 
         // ================================================================
         // Add materials:
@@ -68,6 +73,8 @@
             new THREE.MeshPhongMaterial({
                 color: new THREE.Color("lightgreen"),
                 side: THREE.DoubleSide,
+                emissive: new THREE.Color("green"),
+                emissiveIntensity: 255.0,
             }),
         ];
 
@@ -175,10 +182,15 @@
          * makePointLight() generates a new point light. Used with the twin suns
          * of the scene.
          */
-        function makePointLight() {
+        function makePointLight( lightColor ) {
 
-            var pointLight = new THREE.PointLight();
-
+            var params = pointLightParams;
+            var pointLight = new THREE.PointLight(
+                new THREE.Color( lightColor ),
+                params.intensity,
+                params.distance,
+                params.decay,
+            );
             return pointLight;
         }
         
@@ -205,9 +217,9 @@
         var scene = new THREE.Scene();
 
         var ambientLight = makeAmbientLight();
-        //scene.add(ambientLight);
+        scene.add(ambientLight);
 
-        var testPointLight = makePointLight();
+        var testPointLight = makePointLight("grey");
         testPointLight.position.set( 0, 15, 0);
         scene.add(testPointLight);
 
@@ -219,14 +231,18 @@
 
         updateDeathStar();
 
-        /*
+        
+        var testCone = new THREE.Object3D();
         var coneTest = new THREE.ConeGeometry( 5, 10);
-        var coneMesh = new THREE.Mesh( coneTest, sceneMaterials[1] );
-        scene.add(coneMesh);
+        var coneMesh = new THREE.Mesh( coneTest, sceneMaterials[3] );
+        testCone.add(coneMesh);
+        var testPointLight = makePointLight("green");
+        testCone.add(testPointLight);
 
-        coneMesh.position.set( 10, 10, -20);
-        coneMesh.lookAt( 0, 0, 0, );
-        */
+        testCone.position.set( 10, 10, -20);
+        testCone.lookAt( 0, 0, 0, );
+        scene.add(testCone);
+        
 
         // ================================================================
         // Add renderer:
