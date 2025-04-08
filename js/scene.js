@@ -108,7 +108,7 @@ function createCentralBuilding(params, materials) {
     return centralBuildingObject;
 }
 
-function createSiloBuilding(params, material) {
+function createSiloBuilding(params, materials) {
     let siloBuildingObject = new THREE.Object3D();
     let siloTopGeom = new THREE.SphereGeometry(
         params.siloBuildingRadius,
@@ -126,13 +126,18 @@ function createSiloBuilding(params, material) {
         32
     );
 
-    let siloTopMesh = new THREE.Mesh(siloTopGeom, material);
+    let siloTopMesh = new THREE.Mesh(siloTopGeom, materials.siloBuildingTop);
     siloTopMesh.position.set(
         0,
         params.siloBuildingHeight - params.siloBuildingRadius,
         0
     );
-    let siloBottomMesh = new THREE.Mesh(siloBottomGeom, material);
+    let siloBottomMaterial = [
+        materials.siloBuildingBaseWall,
+        materials.siloBuildingBaseTopBottom,
+        materials.siloBuildingBaseTopBottom,
+    ];
+    let siloBottomMesh = new THREE.Mesh(siloBottomGeom, siloBottomMaterial);
 
     siloBuildingObject.add(siloTopMesh);
     siloBuildingObject.add(siloBottomMesh);
@@ -147,50 +152,99 @@ function createCrateBuilding(params, material) {
     );
     crateBuildingGeom.faceVertexUvs[0] = [
         // FRONT
-        addFaceCoordinates(0.25, 0.75, 0.25, 0.5, 0.75, 0.75), // 021
-        addFaceCoordinates(0.25, 0.5, 0.75, 0.5, 0.75, 0.75), // 231
+        addFaceCoordinates(1 / 4, 3 / 4, 1 / 4, 1 / 2, 3 / 4, 3 / 4), // 021
+        addFaceCoordinates(1 / 4, 1 / 2, 3 / 4, 1 / 2, 3 / 4, 3 / 4), // 231
         // BACK
-        addFaceCoordinates(0.25, 0.25, 0.25, 0, 0.75, 0.25), // 465
-        addFaceCoordinates(0.25, 0, 0.75, 0, 0.75, 0.25), // 675
+        addFaceCoordinates(1 / 4, 1 / 4, 1 / 4, 0, 3 / 4, 1 / 4), // 465
+        addFaceCoordinates(1 / 4, 0, 3 / 4, 0, 3 / 4, 1 / 4), // 675
         // TOP
-        addFaceCoordinates(0.75, 1, 0.25, 1, 0.75, 0.75), // 451
-        addFaceCoordinates(0.25, 1, 0.25, 0.75, 0.75, 0.75), // 501
+        addFaceCoordinates(3 / 4, 1, 1 / 4, 1, 3 / 4, 3 / 4), // 451
+        addFaceCoordinates(1 / 4, 1, 1 / 4, 3 / 4, 3 / 4, 3 / 4), // 501
         // BOTTOM
-        addFaceCoordinates(0.25, 0.25, 0.75, 0.25, 0.25, 0.5), // 762
-        addFaceCoordinates(0.75, 0.25, 0.75, 0.5, 0.25, 0.5), // 632
+        addFaceCoordinates(1 / 4, 1 / 4, 3 / 4, 1 / 4, 1 / 4, 1 / 2), // 762
+        addFaceCoordinates(3 / 4, 1 / 4, 3 / 4, 1 / 2, 1 / 4, 1 / 2), // 632
         // LEFT
-        addFaceCoordinates(0, 0.75, 0, 0.5, 0.25, 0.75), // 570
-        addFaceCoordinates(0, 0.5, 0.25, 0.5, 0.25, 0.75), // 720
+        addFaceCoordinates(0, 3 / 4, 0, 1 / 2, 1 / 4, 3 / 4), // 570
+        addFaceCoordinates(0, 1 / 2, 1 / 4, 1 / 2, 1 / 4, 3 / 4), // 720
         // RIGHT
-        addFaceCoordinates(0.75, 0.75, 0.75, 0.5, 1, 0.75), // 134
-        addFaceCoordinates(0.75, 0.5, 1, 0.5, 1, 0.75), // 364
+        addFaceCoordinates(3 / 4, 3 / 4, 3 / 4, 1 / 2, 1, 3 / 4), // 134
+        addFaceCoordinates(3 / 4, 1 / 2, 1, 1 / 2, 1, 3 / 4), // 364
     ];
     let crateBuildingMesh = new THREE.Mesh(crateBuildingGeom, material);
     console.log(crateBuildingGeom);
     return crateBuildingMesh;
 }
 
-function createStairBuilding(params, material) {
+function createStairBuilding(params, materials) {
     let stairBuildingObject = new THREE.Object3D();
     let stairBuildingBaseGeom = new THREE.BoxGeometry(
         params.stairBuildingBaseWidth,
         params.stairBuildingBaseHeight,
         params.stairBuildingBaseWidth
     );
-    let stairBuildingBaseMesh = new THREE.Mesh(stairBuildingBaseGeom, material);
+    stairBuildingBaseGeom.faceVertexUvs[0] = [
+        // FRONT
+        addFaceCoordinates(1 / 3, 2 / 3, 1 / 3, 1 / 2, 2 / 3, 2 / 3), // 021
+        addFaceCoordinates(1 / 3, 1 / 2, 2 / 3, 1 / 2, 2 / 3, 2 / 3), // 231
+        // BACK
+        addFaceCoordinates(1 / 3, 1 / 6, 1 / 3, 0, 2 / 3, 1 / 6), // 465
+        addFaceCoordinates(1 / 3, 0, 2 / 3, 0, 2 / 3, 1 / 6), // 675
+        // TOP
+        addFaceCoordinates(2 / 3, 1, 1 / 3, 1, 2 / 3, 2 / 3), // 451
+        addFaceCoordinates(1 / 3, 1, 1 / 3, 2 / 3, 2 / 3, 2 / 3), // 501
+        // BOTTOM
+        addFaceCoordinates(1 / 3, 1 / 6, 2 / 3, 1 / 6, 1 / 3, 1 / 2), // 762
+        addFaceCoordinates(2 / 3, 1 / 6, 2 / 3, 1 / 2, 1 / 3, 1 / 2), // 632
+        // LEFT
+        addFaceCoordinates(0, 2 / 3, 0, 1 / 2, 1 / 3, 2 / 3), // 570
+        addFaceCoordinates(0, 1 / 2, 1 / 3, 1 / 2, 1 / 3, 2 / 3), // 720
+        // RIGHT
+        addFaceCoordinates(2 / 3, 2 / 3, 2 / 3, 1 / 2, 1, 2 / 3), // 134
+        addFaceCoordinates(2 / 3, 1 / 2, 1, 1 / 2, 1, 2 / 3), // 364
+    ];
+    let stairBuildingBaseMesh = new THREE.Mesh(
+        stairBuildingBaseGeom,
+        materials.stairBuildingBase
+    );
+    stairBuildingBaseMesh.rotateY(Math.PI / 2);
+    stairBuildingObject.add(stairBuildingBaseMesh);
 
     let stairBuildingTopGeom = new THREE.BoxGeometry(
-        params.stairBuildingBaseWidth,
+        params.stairBuildingTopLength,
         params.stairBuildingTopHeight,
-        params.stairBuildingTopLength
+        params.stairBuildingBaseWidth
     );
-    let stairBuildingTopMesh = new THREE.Mesh(stairBuildingTopGeom, material);
+    stairBuildingTopGeom.faceVertexUvs[0] = [
+        // FRONT
+        addFaceCoordinates(1 / 4, 3 / 4, 1 / 4, 1 / 2, 3 / 4, 3 / 4), // 021
+        addFaceCoordinates(1 / 4, 1 / 2, 3 / 4, 1 / 2, 3 / 4, 3 / 4), // 231
+        // BACK
+        addFaceCoordinates(1 / 4, 1 / 4, 1 / 4, 0, 3 / 4, 1 / 4), // 465
+        addFaceCoordinates(1 / 4, 0, 3 / 4, 0, 3 / 4, 1 / 4), // 675
+        // TOP
+        addFaceCoordinates(3 / 4, 1, 1 / 4, 1, 3 / 4, 3 / 4), // 451
+        addFaceCoordinates(1 / 4, 1, 1 / 4, 3 / 4, 3 / 4, 3 / 4), // 501
+        // BOTTOM
+        addFaceCoordinates(1 / 4, 1 / 4, 3 / 4, 1 / 4, 1 / 4, 1 / 2), // 762
+        addFaceCoordinates(3 / 4, 1 / 4, 3 / 4, 1 / 2, 1 / 4, 1 / 2), // 632
+        // LEFT
+        addFaceCoordinates(0, 3 / 4, 0, 1 / 2, 1 / 4, 3 / 4), // 570
+        addFaceCoordinates(0, 1 / 2, 1 / 4, 1 / 2, 1 / 4, 3 / 4), // 720
+        // RIGHT
+        addFaceCoordinates(3 / 4, 3 / 4, 3 / 4, 1 / 2, 1, 3 / 4), // 134
+        addFaceCoordinates(3 / 4, 1 / 2, 1, 1 / 2, 1, 3 / 4), // 364
+    ];
+    let stairBuildingTopMesh = new THREE.Mesh(
+        stairBuildingTopGeom,
+        materials.stairBuildingTop
+    );
 
     stairBuildingTopMesh.position.set(
         0,
         (params.stairBuildingBaseHeight + params.stairBuildingTopHeight) / 2,
         (params.stairBuildingBaseWidth - params.stairBuildingTopLength) / 2
     );
-    stairBuildingObject.add(stairBuildingBaseMesh, stairBuildingTopMesh);
+    stairBuildingTopMesh.rotateY(Math.PI / 2);
+    stairBuildingObject.add(stairBuildingTopMesh);
     return stairBuildingObject;
 }

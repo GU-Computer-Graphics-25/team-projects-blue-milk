@@ -97,12 +97,35 @@
                         ),
                     }),
                 },
-                siloBuilding: new THREE.MeshPhongMaterial({
-                    specular: new THREE.Color("white"),
-                    shininess: 20,
-                    color: new THREE.Color("green"),
-                    side: THREE.DoubleSide,
-                }),
+                siloBuilding: {
+                    siloBuildingTop: new THREE.MeshPhongMaterial({
+                        specular: new THREE.Color("white"),
+                        shininess: 20,
+                        color: new THREE.Color("white"),
+                        side: THREE.DoubleSide,
+                        map: loader.load("static/siloBuildingTop.png", render),
+                    }),
+                    siloBuildingBaseTopBottom: new THREE.MeshPhongMaterial({
+                        specular: new THREE.Color("white"),
+                        shininess: 20,
+                        color: new THREE.Color("white"),
+                        side: THREE.DoubleSide,
+                        map: loader.load(
+                            "static/siloBuildingBaseTopBottom.png",
+                            render
+                        ),
+                    }),
+                    siloBuildingBaseWall: new THREE.MeshPhongMaterial({
+                        specular: new THREE.Color("white"),
+                        shininess: 20,
+                        color: new THREE.Color("white"),
+                        side: THREE.DoubleSide,
+                        map: loader.load(
+                            "static/siloBuildingBaseWall.png",
+                            render
+                        ),
+                    }),
+                },
                 crateBuilding: new THREE.MeshPhongMaterial({
                     specular: new THREE.Color("white"),
                     shininess: 20,
@@ -110,12 +133,25 @@
                     side: THREE.DoubleSide,
                     map: loader.load("static/crateBuiding.png", render),
                 }),
-                stairBuilding: new THREE.MeshPhongMaterial({
-                    specular: new THREE.Color("white"),
-                    shininess: 20,
-                    color: new THREE.Color("pink"),
-                    side: THREE.DoubleSide,
-                }),
+                stairBuilding: {
+                    stairBuildingTop: new THREE.MeshPhongMaterial({
+                        specular: new THREE.Color("white"),
+                        shininess: 20,
+                        color: new THREE.Color("white"),
+                        side: THREE.DoubleSide,
+                        map: loader.load("static/stairBuildingTop.png", render),
+                    }),
+                    stairBuildingBase: new THREE.MeshPhongMaterial({
+                        specular: new THREE.Color("white"),
+                        shininess: 20,
+                        color: new THREE.Color("white"),
+                        side: THREE.DoubleSide,
+                        map: loader.load(
+                            "static/stairBuildingBase.png",
+                            render
+                        ),
+                    }),
+                },
             };
 
             const buildingParams = {
