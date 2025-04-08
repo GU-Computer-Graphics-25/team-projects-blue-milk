@@ -37,7 +37,7 @@
             // ----- Outer shell (hull): ------
             hullRadius: 10,
             hullWSegments: 32,
-            hullHSegments: 16,
+            hullHSegments: 32,
             hullThetaStart: 0.3,
             // ----- cannon: ------------------
             //cannonThetaStart: -0.3,
@@ -49,7 +49,6 @@
             laserMergeRadius: 2, 
             laserMergeHeight: 4,
             laserMergeRSegs: 8, // Radial segments
-            laserMergeHSegs: 1, // Height  segments
             laserMergeOpenEnded: true,
             // ----- laserBeam base: ----------
             beamBaseRadius: 0.5,
@@ -59,7 +58,7 @@
         }
         var explosionParams = {
             coreRadius: 8,
-            coreWSegments: 32, // width segments
+            coreSegments: 32, // width segments
         }
         var pointLightParams = {
             intensity: 1,
@@ -225,7 +224,7 @@
                 //params.laserMergeRadius, // radius
                 params.laserMergeHeight, // height
                 params.laserMergeRSegs, // radial segments
-                params.laserMergeHSegs, // height segments
+                1, // height segments
                 params.laserMergeOpenEnded, // open-ended.
             );
             var laserBaseMesh = new THREE.Mesh( laserBaseGeom, sceneMaterials[3] );
@@ -264,6 +263,20 @@
         function makeExplosion() {
 
             var params = explosionParams;
+
+            var explosion = new THREE.Object3D();
+
+            // Add a central core to the explosion:
+            var coreGeom = new THREE.SphereGeometry(
+                params.coreRadius, // radius
+                params.coreSegments, // Width segments
+                params.coreSegments, // Height segments
+            );
+            var coreMesh = new THREE.Mesh( coreGeom, sceneMaterials[5] );
+            explosion.add( coreMesh );
+
+            // Return the completed explosion:
+            return explosion;
         }
 
          // ----------------------------------------------------------------
@@ -336,6 +349,9 @@
         scene.add(deathStar);
 
         updateDeathStar();
+
+        var explosion = makeExplosion();
+        scene.add(explosion);
         
 
         // ================================================================
