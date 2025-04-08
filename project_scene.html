@@ -104,12 +104,21 @@
                 transparent: true,
                 opacity: 0.75,
             }),
-             // 5. Phong material used for the core of a explosion:
-             new THREE.MeshPhongMaterial({
+            // 5. Phong material used for the core of a explosion:
+            new THREE.MeshPhongMaterial({
                 color: new THREE.Color("white"),
                 side: THREE.DoubleSide,
                 emissive: new THREE.Color("lightyellow"),
-                emissiveIntensity: 255.0,
+                emissiveIntensity: 0.5,
+                //transparent: true,
+                //opacity: 0.75,
+            }),
+            // 6. Phong material used for the shockwave of a explosion:
+            new THREE.MeshPhongMaterial({
+                color: new THREE.Color("lightyellow"),
+                side: THREE.DoubleSide,
+                emissive: new THREE.Color("yellow"),
+                emissiveIntensity: 0.5,
                 //transparent: true,
                 //opacity: 0.75,
             }),
@@ -274,6 +283,23 @@
             );
             var coreMesh = new THREE.Mesh( coreGeom, sceneMaterials[5] );
             explosion.add( coreMesh );
+
+            // Add the shockwave to the explosion:
+            var waveGeom = new THREE.RingGeometry(
+                params.coreRadius, // inner radius
+                params.coreRadius * ( params.coreRadius / 5 ), // outer radius
+                32, // theta segments ( roundness )
+                1, // phi segemnts
+            );
+            var waveMesh = new THREE.Mesh( waveGeom, sceneMaterials[6] );
+            waveMesh.rotation.set(Math.PI/2, 0, 0);
+            waveMesh.position.set( 0, 0.5, 0 );
+            explosion.add( waveMesh );
+
+            // Add illumination to the explosion:
+            var pointLight = makePointLight("lightyellow");
+            pointLight.position.set( 0, 0.5, 0);
+            explosion.add( pointLight );
 
             // Return the completed explosion:
             return explosion;
