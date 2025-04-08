@@ -34,6 +34,10 @@
             hSegments: 10, // height segments
         }
         var deathStarParams = {
+            // ---- coordinate positions: -----
+            X: 20,
+            Y: 20,
+            Z: -20,
             // ----- Outer shell (hull): ------
             hullRadius: 10,
             hullWSegments: 32,
@@ -54,7 +58,7 @@
             beamBaseRadius: 0.5,
             // ----- laserbeam proper: --------
             beamRadius: 0.25,
-            beamHeight: 25,
+            beamHeight: Math.abs(deathStarParams.X) + Math.abs(deathStarParams.Z),
         }
         var explosionParams = {
             coreRadius: 8,
@@ -369,9 +373,13 @@
          */
         function updateDeathStar() {
 
-            //deathStar.rotation.set( 0, 0, (Math.PI/3) );
-            deathStar.position.set( 20, 20, -20);
-            deathStar.lookAt( 0, 0, 0);
+            var params = deathStarParams;
+            deathStar.position.set( 
+                params.X,
+                params.Y,
+                params.Z,
+            );
+            deathStar.lookAt( 0, 0, 0); // Lock Death Star to face origin point.
         }
 
         // ================================================================
