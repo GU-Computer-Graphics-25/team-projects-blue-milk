@@ -55,7 +55,11 @@
             beamBaseRadius: 0.5,
             // ----- laserbeam proper: --------
             beamRadius: 0.25,
-            beamHeight: 30,
+            beamHeight: 25,
+        }
+        var explosionParams = {
+            coreRadius: 8,
+            coreWSegments: 32, // width segments
         }
         var pointLightParams = {
             intensity: 1,
@@ -100,6 +104,15 @@
                 emissiveIntensity: 255.0,
                 transparent: true,
                 opacity: 0.75,
+            }),
+             // 5. Phong material used for the core of a explosion:
+             new THREE.MeshPhongMaterial({
+                color: new THREE.Color("white"),
+                side: THREE.DoubleSide,
+                emissive: new THREE.Color("lightyellow"),
+                emissiveIntensity: 255.0,
+                //transparent: true,
+                //opacity: 0.75,
             }),
         ];
 
@@ -242,6 +255,15 @@
             laser.add( mainLaserMesh );
 
             return laser;
+        }
+
+        /**
+         * makeExplosion() generates an explosion at the origin, used to indicate 
+         * the detonation of the Death Star's laserbeam on Tatooine.
+         */
+        function makeExplosion() {
+
+            var params = explosionParams;
         }
 
          // ----------------------------------------------------------------
