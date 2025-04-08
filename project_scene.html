@@ -377,7 +377,11 @@
         updateDeathStar();
 
         var explosion = makeExplosion();
-        scene.add(explosion);
+        //scene.add(explosion);
+
+        var testBuilding = new THREE.BoxGeometry(5, 5, 5);
+        var testMesh =  new THREE.Mesh( testBuilding, sceneMaterials[1] );
+        scene.add( testMesh );
         
 
         // ================================================================
