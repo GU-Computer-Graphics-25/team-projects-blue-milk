@@ -51,8 +51,11 @@
             laserMergeRSegs: 8, // Radial segments
             laserMergeHSegs: 1, // Height  segments
             laserMergeOpenEnded: true,
-            // laserBeam base:
+            // ----- laserBeam base: ----------
             beamBaseRadius: 0.5,
+            // ----- laserbeam proper: --------
+            beamRadius: 0.25,
+            beamHeight: 30,
         }
         var pointLightParams = {
             intensity: 1,
@@ -96,7 +99,7 @@
                 emissive: new THREE.Color("green"),
                 emissiveIntensity: 255.0,
                 transparent: true,
-                opacity: 0.5,
+                opacity: 0.75,
             }),
         ];
 
@@ -227,6 +230,17 @@
             beamBaseMesh.position.set( 0, (params.laserMergeHeight), 0);
             laser.add( beamBaseMesh );
 
+            // Add the main laserbeam cylander:
+            var mainLaserGeom = new THREE.CylinderGeometry(
+                params.beamRadius, // cylander top radius
+                params.beamRadius, // cylander radius bottom
+                params.beamHeight, // cylander height
+            );
+            var mainLaserMesh = new THREE.Mesh( mainLaserGeom, sceneMaterials[4] );
+            // Adjust the laserbeam so that it starts from the beam base always:
+            mainLaserMesh.position.set( 0, (params.beamHeight/2)+params.laserMergeHeight, 0)
+            laser.add( mainLaserMesh );
+
             return laser;
         }
 
@@ -240,7 +254,10 @@
          */
         function makeAmbientLight() {
             
-            var ambientLight = new THREE.AmbientLight();
+            var ambientLight = new THREE.AmbientLight(
+                new THREE.Color("grey"), // color
+                1 // intensity
+            );
 
             return ambientLight;
         }
@@ -291,12 +308,12 @@
         scene.add(testPointLight);
 
         var desert = makePlain();
-        //scene.add(desert);
+        scene.add(desert);
 
         var deathStar = makeDeathStar();
         scene.add(deathStar);
 
-        //updateDeathStar();
+        updateDeathStar();
         
 
         // ================================================================
