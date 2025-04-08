@@ -262,6 +262,11 @@
             mainLaserMesh.position.set( 0, (params.beamHeight/2)+params.laserMergeHeight, 0)
             laser.add( mainLaserMesh );
 
+            // Add illumination to the main laserbeam:
+            var laserLight = makeLaserLight();
+            laserLight.position.set( 0, params.laserMergeHeight, 0 );
+            laser.add( laserLight );
+
             return laser;
         }
 
@@ -337,6 +342,20 @@
                 params.decay,
             );
             return pointLight;
+        }
+
+        /**
+         * makeLaserLight() creates a new directional light, which is then
+         * applied to the Death Star laser to help make it glow / illuminate buildings.
+         */
+        function makeLaserLight() {
+
+            var laserLight = new THREE.DirectionalLight(
+                new THREE.Color("green"), // color
+                1, // intensity
+            );
+            // Since the light's target is automatically the origin, no target is needed.
+            return laserLight;
         }
         
 
