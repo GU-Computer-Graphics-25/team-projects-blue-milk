@@ -75,12 +75,28 @@
                     color: new THREE.Color(0x6ec986),
                     side: THREE.DoubleSide,
                 }),
-                centralBuilding: new THREE.MeshPhongMaterial({
-                    specular: new THREE.Color("white"),
-                    shininess: 20,
-                    color: new THREE.Color("red"),
-                    side: THREE.DoubleSide,
-                }),
+                centralBuilding: {
+                    centralBuildingTop: new THREE.MeshPhongMaterial({
+                        specular: new THREE.Color("white"),
+                        shininess: 20,
+                        color: new THREE.Color("white"),
+                        side: THREE.DoubleSide,
+                        map: loader.load(
+                            "static/centralBuildingTop.png",
+                            render
+                        ),
+                    }),
+                    centralBuildingBase: new THREE.MeshPhongMaterial({
+                        specular: new THREE.Color("white"),
+                        shininess: 20,
+                        color: new THREE.Color("white"),
+                        side: THREE.DoubleSide,
+                        map: loader.load(
+                            "static/centralBuildingBase.png",
+                            render
+                        ),
+                    }),
+                },
                 siloBuilding: new THREE.MeshPhongMaterial({
                     specular: new THREE.Color("white"),
                     shininess: 20,

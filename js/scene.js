@@ -50,7 +50,7 @@ function createGroundScene(params, materials) {
     return groundScene;
 }
 
-function createCentralBuilding(params, material) {
+function createCentralBuilding(params, materials) {
     let centralBuildingObject = new THREE.Object3D();
     let centralBuildingTopGeom = new THREE.SphereGeometry(
         params.centralBuildingTopRadius,
@@ -63,7 +63,7 @@ function createCentralBuilding(params, material) {
     );
     let centralBuildingTopMesh = new THREE.Mesh(
         centralBuildingTopGeom,
-        material
+        materials.centralBuildingTop
     );
     centralBuildingTopMesh.position.set(0, params.centralBuildingTopRadius, 0);
 
@@ -72,16 +72,36 @@ function createCentralBuilding(params, material) {
         params.centralBuildingBottomLength / 2,
         params.centralBuildingBottomLength
     );
+    centralBuildingBottomGeom.faceVertexUvs[0] = [
+        // FRONT
+        addFaceCoordinates(1 / 3, 2 / 3, 1 / 3, 1 / 2, 2 / 3, 2 / 3), // 021
+        addFaceCoordinates(1 / 3, 1 / 2, 2 / 3, 1 / 2, 2 / 3, 2 / 3), // 231
+        // BACK
+        addFaceCoordinates(1 / 3, 1 / 6, 1 / 3, 0, 2 / 3, 1 / 6), // 465
+        addFaceCoordinates(1 / 3, 0, 2 / 3, 0, 2 / 3, 1 / 6), // 675
+        // TOP
+        addFaceCoordinates(2 / 3, 1, 1 / 3, 1, 2 / 3, 2 / 3), // 451
+        addFaceCoordinates(1 / 3, 1, 1 / 3, 2 / 3, 2 / 3, 2 / 3), // 501
+        // BOTTOM
+        addFaceCoordinates(1 / 3, 1 / 6, 2 / 3, 1 / 6, 1 / 3, 1 / 2), // 762
+        addFaceCoordinates(2 / 3, 1 / 6, 2 / 3, 1 / 2, 1 / 3, 1 / 2), // 632
+        // LEFT
+        addFaceCoordinates(0, 2 / 3, 0, 1 / 2, 1 / 3, 2 / 3), // 570
+        addFaceCoordinates(0, 1 / 2, 1 / 3, 1 / 2, 1 / 3, 2 / 3), // 720
+        // RIGHT
+        addFaceCoordinates(2 / 3, 2 / 3, 2 / 3, 1 / 2, 1, 2 / 3), // 134
+        addFaceCoordinates(2 / 3, 1 / 2, 1, 1 / 2, 1, 2 / 3), // 364
+    ];
     let centralBuildingBottomMesh = new THREE.Mesh(
         centralBuildingBottomGeom,
-        material
+        materials.centralBuildingBase
     );
     centralBuildingBottomMesh.position.set(
         0,
         params.centralBuildingBottomLength / 4,
         0
     );
-
+    console.log(centralBuildingBottomGeom);
     centralBuildingObject.add(centralBuildingTopMesh);
     centralBuildingObject.add(centralBuildingBottomMesh);
 
