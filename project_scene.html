@@ -416,23 +416,23 @@
             camera.lookAt(new THREE.Vector3(params.atX, params.atY, params.atZ));
             return camera;
         }
-        /*
-        function setupCamera(cameraParameters) {
-            // Set up an abbreviation 
-            var cp = cameraParameters;
-            // Create an initial camera with the desired shape
-            var camera = new THREE.PerspectiveCamera(cp.fov, cp.aspectRatio, cp.near, cp.far);
-            // Set the camera location and orientation
-            camera.position.set(cp.eyeX, cp.eyeY, cp.eyeZ);
-            camera.up.set(cp.upX, cp.upY, cp.upZ);
-            camera.lookAt(new THREE.Vector3(cp.atX, cp.atY, cp.atZ));
-            return camera;
+        
+        function updateCamera() {
+            scene.remove(camera);
+            camera = makeCamera();
+            scene.add(camera);
+
+            if (enableOrbitControls) {
+                cameraControls = new THREE.OrbitControls(camera, canvas);
+                setupCameraControls(cameraControls);
+            }
+            render();
         }
-        */
 
         function setupCameraControls(cameraControls) {
             cameraControls.addEventListener('change', render);
             cameraControls.update();
+            console.log("setUpCameraControls: Camera controls set.")
         }
 
         function render() {
@@ -466,7 +466,7 @@
         var enableOrbitControls = false;
 
         var cameraControls = new THREE.OrbitControls(camera, canvas);
-        if (enableOrbitControls) { //only configure if we enable it
+        if (enableOrbitControls == true ) { //only configure if we enable it
             //set up camera controls so we can use mouse to pan around scene
             setupCameraControls(cameraControls);
         }
