@@ -498,20 +498,19 @@
         render();
 
         // ================================================================
-        // Add camera setup:
+        // Add camera controls:
 
-        /*
-        var state = TW.cameraSetup(renderer,
-            scene,
-            {
-                minx: -10, maxx: 10,
-                miny: 0, maxy: 10,
-                minz: -10, maxz: 10
-            });
-        
-        state.axisHelper.visible = true;
-        TW.render();
-        */
+        document.addEventListener("keypress", (event) => {
+            const key = event.key;
+            switch(key) {
+                case "1": // Test camera angle
+                    cameraParams.eyeX = -0;
+                    cameraParams.eyeY = 10;
+                    cameraParams.eyeZ = 0;
+                    updateCamera();
+                    break;
+            }
+        });
 
         // ================================================================
         // Add GUI:
