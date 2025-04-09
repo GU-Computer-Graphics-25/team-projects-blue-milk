@@ -27,3 +27,21 @@ function addFaceCoordinates(as, at, bs, bt, cs, ct) {
         new THREE.Vector2(cs, ct),
     ];
 }
+
+function updateCamera() {
+    scene.remove(camera);
+    camera = setupCamera(cameraParams);
+    scene.add(camera);
+
+    if (enableOrbitControls) {
+        cameraControls = new THREE.OrbitControls(camera, canvas);
+        setupCameraControls(cameraControls);
+    }
+    render();
+}
+
+function setupCameraControls(cameraControls) {
+    cameraControls.addEventListener("change", render);
+    cameraControls.update();
+    console.log("setUpCameraControls: Camera controls set.");
+}
