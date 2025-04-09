@@ -430,6 +430,11 @@
         }
         */
 
+        function setupCameraControls(cameraControls) {
+            cameraControls.addEventListener('change', render);
+            cameraControls.update();
+        }
+
         function render() {
             // A render function; assume global variables scene, renderer, and camera
             renderer.render(scene, camera);
@@ -444,10 +449,27 @@
         // ----------------------------------------------------------------
         // Add renderer:
         var renderer = new THREE.WebGLRenderer();
+
+        // ----------------------------------------------------------------
+        // Add canvas:             
+        var canvas = renderer.domElement;
+        var parent = document.body;
+        parent.appendChild(canvas);
+        renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+        renderer.setClearColor(new THREE.Color(0x2f2f2f), 1);
+
         // ----------------------------------------------------------------
         // Add camera:
         var camera = makeCamera();
         scene.add(camera);
+
+        var enableOrbitControls = false;
+
+        var cameraControls = new THREE.OrbitControls(camera, canvas);
+        if (enableOrbitControls) { //only configure if we enable it
+            //set up camera controls so we can use mouse to pan around scene
+            setupCameraControls(cameraControls);
+        }
         // ----------------------------------------------------------------
         // Add objects:
         var ambientLight = makeAmbientLight();
