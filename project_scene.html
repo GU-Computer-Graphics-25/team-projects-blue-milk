@@ -441,6 +441,15 @@
         
         var scene = new THREE.Scene();
 
+        // ----------------------------------------------------------------
+        // Add renderer:
+        var renderer = new THREE.WebGLRenderer();
+        // ----------------------------------------------------------------
+        // Add camera:
+        var camera = makeCamera();
+        scene.add(camera);
+        // ----------------------------------------------------------------
+        // Add objects:
         var ambientLight = makeAmbientLight();
         scene.add(ambientLight);
 
@@ -462,13 +471,9 @@
         var testBuilding = new THREE.BoxGeometry(5, 5, 5);
         var testMesh =  new THREE.Mesh( testBuilding, sceneMaterials[1] );
         scene.add( testMesh );
+
+        render();
         
-
-        // ================================================================
-        // Add renderer:
-
-        var renderer = new THREE.WebGLRenderer();
-
         TW.mainInit(renderer, scene); // TODO: Change from TW
 
         // ================================================================
