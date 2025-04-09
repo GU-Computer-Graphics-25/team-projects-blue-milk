@@ -35,8 +35,8 @@
         }
         var deathStarParams = {
             // ---- coordinate positions: -----
-            X: 20,
-            Y: 20,
+            X: 40,
+            Y: 40,
             Z: -20,
             // ----- Outer shell (hull): ------
             hullRadius: 10,
@@ -72,8 +72,8 @@
         var cameraParams = {
             near: 1,
             far: 250,
-            fov: 75,                // degrees
-            aspectRatio: 700 / 500,   // from dimensions of the canvas, see CSS
+            fov: 75, // degrees
+            aspectRatio: 700 / 500, // from dimensions of the canvas, see CSS
             atX: 0, //0
             atY: 0, //0
             atZ: 0, //0
@@ -463,7 +463,7 @@
         var camera = makeCamera();
         scene.add(camera);
 
-        var enableOrbitControls = true;
+        var enableOrbitControls = false; // !!! IMPORTANT !!! 
 
         var cameraControls = new THREE.OrbitControls(camera, canvas);
         if (enableOrbitControls == true ) { //only configure if we enable it
@@ -503,10 +503,26 @@
         document.addEventListener("keypress", (event) => {
             const key = event.key;
             switch(key) {
-                case "1": // Test camera angle
-                    cameraParams.eyeX = -0;
-                    cameraParams.eyeY = 10;
-                    cameraParams.eyeZ = 0;
+                case "1": // Origin, looking towards the Death Star.
+                    // change camera position:
+                    cameraParams.eyeX = (deathStarParams.X/2)*-1;
+                    cameraParams.eyeY = 3;
+                    cameraParams.eyeZ = (deathStarParams.Z/2)*-1;
+                    // change camera target:
+                    cameraParams.atX = deathStarParams.X;
+                    cameraParams.atY = deathStarParams.Y/2;
+                    cameraParams.atZ = deathStarParams.Z;
+                    updateCamera();
+                    break;
+                case "2": // The bridge of the Death Star, looking at Tatooine
+                    // change camera position:
+                    cameraParams.eyeX = deathStarParams.X;
+                    cameraParams.eyeY = deathStarParams.Y;
+                    cameraParams.eyeZ = deathStarParams.Z;
+                    // change camera target:
+                    cameraParams.atX = 0;
+                    cameraParams.atY = 0;
+                    cameraParams.atZ = 0;
                     updateCamera();
                     break;
             }
