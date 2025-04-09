@@ -396,8 +396,7 @@
             // ----------------------------------------------------------------
             // Add canvas:
             var canvas = renderer.domElement;
-            var parent = document.body;
-            parent.appendChild(canvas);
+            var parent = document.body.appendChild(canvas);
             renderer.setSize(canvas.clientWidth, canvas.clientHeight);
             renderer.setClearColor(new THREE.Color(0x2f2f2f), 1);
 
