@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Project: Blue Milk</title>
+        <!-- <script src="./js/three.js"></script> -->
+        <script src="https://cdn.jsdelivr.net/npm/three@0.123.0/build/three.min.js"></script>
+        <script src="./js/OrbitControls.js"></script>
+        <script src="./js/utils.js"></script>
+        <script src="./js/scene.js"></script>
+        <script src="./js/dat.gui.js"></script>
+
+        <style>
+            body {
+                margin: 0;
+            }
+        </style>
+    </head>
+    <body>
+        <script>
+            let ah = new THREE.AxesHelper(50);
+            let cameraParams = {
+                near: 1,
+                far: 10000,
+                fov: 75, // degrees
+                aspectRatio: window.innerWidth / window.innerHeight, // adjusts based on window size
+                atX: 0,
+                atY: 0,
+                atZ: 0,
+                eyeX: 200,
+                eyeY: 50,
+                eyeZ: 150,
+                upX: 0,
+                upY: 1,
+                upZ: 0,
+            };
+
+            // Create an initial empty Scene
+            let scene = new THREE.Scene();
+            // Create a renderer to render the scene
+            let renderer = new THREE.WebGLRenderer();
+            // Adds the canvas to the document
+            // renderer.shadowMap.enabled = true;
+            renderer.setSize(window.innerWidth, window.innerHeight); // size based on window
+            renderer.setAnimationLoop(render); // continuously render frames (main loop)
+            renderer.setClearColor(0x2f2f2f, 1); // set background color (light gray)
+            document.body.appendChild(renderer.domElement); // append canvas to DOM
+
+            // Set up a camera for the scene
+            let camera = setupCamera(cameraParams);
+
+            // Add OrbitControls to allow user interaction (zoom, rotate, pan)
+            const controls = new THREE.OrbitControls(
+                camera,
+                renderer.domElement
+            );
+
+            // Add lights
+            // Add ambient light source
+            let ambLight = new THREE.AmbientLight(
+                new THREE.Color("white"),
+                0.75
+            );
+
+            scene.add(ambLight);
+            scene.add(camera);
+            scene.add(ah); //add axishelper to scene -- created as a global variable
+
+            let loader = new THREE.TextureLoader();
+
+            const groundSceneMaterials = {
+                basePlate: new THREE.MeshPhongMaterial({
+                    specular: new THREE.Color("white"),
+                    shininess: 20,
+                    color: new THREE.Color(0x6ec986),
+                    side: THREE.DoubleSide,
+                }),
+                centralBuilding: {
+                    centralBuildingTop: new THREE.MeshPhongMaterial({
+                        specular: new THREE.Color("white"),
+                        shininess: 20,
+                        color: new THREE.Color("white"),
+                        side: THREE.DoubleSide,
+                        map: loader.load(
+                            "static/centralBuildingTop.png",
+                            render
+                        ),
+                    }),
+                    centralBuildingBase: new THREE.MeshPhongMaterial({
+                        specular: new THREE.Color("white"),
+                        shininess: 20,
+                        color: new THREE.Color("white"),
+                        side: THREE.DoubleSide,
+                        map: loader.load(
+                            "static/centralBuildingBase.png",
+                            render
+                        ),
+                    }),
+                },
+                siloBuilding: {
+                    siloBuildingTop: new THREE.MeshPhongMaterial({
+                        specular: new THREE.Color("white"),
+                        shininess: 20,
+                        color: new THREE.Color("white"),
+                        side: THREE.DoubleSide,
+                        map: loader.load("static/siloBuildingTop.png", render),
+                    }),
+                    siloBuildingBaseTopBottom: new THREE.MeshPhongMaterial({
+                        specular: new THREE.Color("white"),
+                        shininess: 20,
+                        color: new THREE.Color("white"),
+                        side: THREE.DoubleSide,
+                        map: loader.load(
+                            "static/siloBuildingBaseTopBottom.png",
+                            render
+                        ),
+                    }),
+                    siloBuildingBaseWall: new THREE.MeshPhongMaterial({
+                        specular: new THREE.Color("white"),
+                        shininess: 20,
+                        color: new THREE.Color("white"),
+                        side: THREE.DoubleSide,
+                        map: loader.load(
+                            "static/siloBuildingBaseWall.png",
+                            render
+                        ),
+                    }),
+                },
+                crateBuilding: new THREE.MeshPhongMaterial({
+                    specular: new THREE.Color("white"),
+                    shininess: 20,
+                    color: new THREE.Color("white"),
+                    side: THREE.DoubleSide,
+                    map: loader.load("static/crateBuiding.png", render),
+                }),
+                stairBuilding: {
+                    stairBuildingTop: new THREE.MeshPhongMaterial({
+                        specular: new THREE.Color("white"),
+                        shininess: 20,
+                        color: new THREE.Color("white"),
+                        side: THREE.DoubleSide,
+                        map: loader.load("static/stairBuildingTop.png", render),
+                    }),
+                    stairBuildingBase: new THREE.MeshPhongMaterial({
+                        specular: new THREE.Color("white"),
+                        shininess: 20,
+                        color: new THREE.Color("white"),
+                        side: THREE.DoubleSide,
+                        map: loader.load(
+                            "static/stairBuildingBase.png",
+                            render
+                        ),
+                    }),
+                },
+            };
+
+            const buildingParams = {
+                basePlateWidth: 200,
+
+                centralBuildingTopRadius: 20,
+                centralBuildingBottomLength: 40,
+
+                siloBuildingRadius: 10,
+                siloBuildingHeight: 20,
+
+                crateBuildingWidth: 20,
+                crateBuildingHeight: 20,
+                crateBuildingLength: 40,
+
+                stairBuildingBaseWidth: 40,
+                stairBuildingBaseHeight: 20,
+                stairBuildingTopLength: 20,
+                stairBuildingTopHeight: 10,
+            };
+
+            scene.add(createGroundScene(buildingParams, groundSceneMaterials));
+        </script>
+    </body>
+</html>
