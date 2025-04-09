@@ -463,7 +463,7 @@
         var camera = makeCamera();
         scene.add(camera);
 
-        var enableOrbitControls = false; // !!! IMPORTANT !!! 
+        var enableOrbitControls = true; // !!! IMPORTANT !!! 
 
         var cameraControls = new THREE.OrbitControls(camera, canvas);
         if (enableOrbitControls == true ) { //only configure if we enable it
@@ -517,7 +517,7 @@
                 case "2": // The bridge of the Death Star, looking at Tatooine
                     // change camera position:
                     cameraParams.eyeX = deathStarParams.X;
-                    cameraParams.eyeY = deathStarParams.Y;
+                    cameraParams.eyeY = deathStarParams.Y+(deathStarParams.hullRadius);
                     cameraParams.eyeZ = deathStarParams.Z;
                     // change camera target:
                     cameraParams.atX = 0;
