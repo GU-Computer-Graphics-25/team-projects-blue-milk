@@ -379,7 +379,7 @@
         
 
         // ----------------------------------------------------------------
-        // GUI / animation functions:
+        // GUI / animation / camera functions:
 
         /**
          * updateDeathStar() takes the parameters for the Death Star's
@@ -395,6 +395,44 @@
                 params.Z,
             );
             deathStar.lookAt( 0, 0, 0); // Lock Death Star to face origin point.
+        }
+
+        /**
+         * makeCamera() generates a new adjustible camera for the scene.
+         */
+        function makeCamera() {
+
+            var params = cameraParams;
+
+            var camera = new THREE.PerspectiveCamera(
+                params.fov,
+                params.aspectRatio,
+                params.near,
+                params.far,
+            );
+            // Adjust camera position:
+            camera.position.set(params.eyeX, params.eyeY, params.eyeZ);
+            camera.up.set(params.upX, params.upY, params.upZ);
+            camera.lookAt(new THREE.Vector3(params.atX, params.atY, params.atZ));
+            return camera;
+        }
+        /*
+        function setupCamera(cameraParameters) {
+            // Set up an abbreviation 
+            var cp = cameraParameters;
+            // Create an initial camera with the desired shape
+            var camera = new THREE.PerspectiveCamera(cp.fov, cp.aspectRatio, cp.near, cp.far);
+            // Set the camera location and orientation
+            camera.position.set(cp.eyeX, cp.eyeY, cp.eyeZ);
+            camera.up.set(cp.upX, cp.upY, cp.upZ);
+            camera.lookAt(new THREE.Vector3(cp.atX, cp.atY, cp.atZ));
+            return camera;
+        }
+        */
+
+        function render() {
+            // A render function; assume global variables scene, renderer, and camera
+            renderer.render(scene, camera);
         }
 
         // ================================================================
