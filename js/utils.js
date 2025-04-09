@@ -43,5 +43,4 @@ function updateCamera() {
 function setupCameraControls(cameraControls) {
     cameraControls.addEventListener("change", render);
     cameraControls.update();
-    console.log("setUpCameraControls: Camera controls set.");
 }

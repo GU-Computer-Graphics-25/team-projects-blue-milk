@@ -101,7 +101,6 @@ function createCentralBuilding(params, materials) {
         params.centralBuildingBottomLength / 4,
         0
     );
-    console.log(centralBuildingBottomGeom);
     centralBuildingObject.add(centralBuildingTopMesh);
     centralBuildingObject.add(centralBuildingBottomMesh);
 
@@ -171,7 +170,6 @@ function createCrateBuilding(params, material) {
         addFaceCoordinates(3 / 4, 1 / 2, 1, 1 / 2, 1, 3 / 4), // 364
     ];
     let crateBuildingMesh = new THREE.Mesh(crateBuildingGeom, material);
-    console.log(crateBuildingGeom);
     return crateBuildingMesh;
 }
 
