@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <title>Project Scene</title>
+    <link href="./css/styles.css" rel="stylesheet" type="text/css">
+    <style>
+        canvas {
+            display: block;
+            margin: 10px auto;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+
+    <script src="./js/three.js"></script>
+    <script src="./js/OrbitControls.js"></script>
+    <script src="./js/tw.js"></script>
+    <script src="./js/SceneUtils.js"></script>
+</head>
+
+<body>
+    <h1>Project Scene</h1>
+    <script>
+        // ================================================================
+        // Add Global Parameters:
+
+        var plainParams = {
+            width: 30,
+            height: 30,
+            wSegments: 10, // width segments
+            hSegments: 10, // height segments
+        }
+        var deathStarParams = {
+            // ---- coordinate positions: -----
+            X: 40,
+            Y: 40,
+            Z: -20,
+            // ----- Outer shell (hull): ------
+            hullRadius: 10,
+            hullWSegments: 32,
+            hullHSegments: 32,
+            hullThetaStart: 0.3,
+            // ----- cannon: ------------------
+            //cannonThetaStart: -0.3,
+            cannonThetaLength: -0.3, // Inverse of the theta start on the hull.
+            //cannonThetaLength: -Math.PI * 4,
+        }
+        var laserParams = {
+            // cone base ( 8 merged lasers ):
+            laserMergeRadius: 2, 
+            laserMergeHeight: 4,
+            laserMergeRSegs: 8, // Radial segments
+            laserMergeOpenEnded: true,
+            // ----- laserBeam base: ----------
+            beamBaseRadius: 0.5,
+            // ----- laserbeam proper: --------
+            beamRadius: 0.25,
+            beamHeight: Math.abs(deathStarParams.X) + Math.abs(deathStarParams.Z),
+        }
+        var explosionParams = {
+            coreRadius: 8,
+            coreSegments: 32, // width segments
+        }
+        var pointLightParams = {
+            intensity: 1,
+            distance: 0,
+            decay: 2,
+        }
+        var cameraParams = {
+            near: 1,
+            far: 250,
+            fov: 75, // degrees
+            aspectRatio: 700 / 500, // from dimensions of the canvas, see CSS
+            atX: 0, //0
+            atY: 0, //0
+            atZ: 0, //0
+            eyeX: 30, //30
+            eyeY: 50, //50
+            eyeZ: -75, //-75
+            upX: 0,
+            upY: 1,
+            upZ: 0
+        };
+
+        // ================================================================
+        // Add materials:
+
+        var sceneMaterials = [
+            // 0. Material for Tatooine's desert floor.
+            new THREE.MeshPhongMaterial({
+                color: new THREE.Color("tan"), // color
+                side: THREE.DoubleSide, // sides
+            }),
+            // 1. Material for the death-star frame ("hull").
+            new THREE.MeshPhongMaterial({
+                color: new THREE.Color("darkgrey"), // color
+                side: THREE.SingleSide, // sides: show outside surface
+            }),
+            // 2. Material for the concave sphere / cannon of the Death Star
+            new THREE.MeshPhongMaterial({
+                color: new THREE.Color("grey"),
+                side: THREE.DoubleSide,
+            }),
+            // 3. Phong material used for the 8-laser base of the Death Star:
+            new THREE.MeshPhongMaterial({
+                color: new THREE.Color("lightgreen"),
+                side: THREE.DoubleSide,
+                emissive: new THREE.Color("green"),
+                emissiveIntensity: 255.0,
+                transparent: true,
+                opacity: 0.5,
+                wireframe: true,
+            }),
+            // 4. Phong material used for the main laserbeam of the Death Star:
+            new THREE.MeshPhongMaterial({
+                color: new THREE.Color("lightgreen"),
+                side: THREE.DoubleSide,
+                emissive: new THREE.Color("green"),
+                emissiveIntensity: 255.0,
+                transparent: true,
+                opacity: 0.75,
+            }),
+            // 5. Phong material used for the core of a explosion:
+            new THREE.MeshPhongMaterial({
+                color: new THREE.Color("white"),
+                side: THREE.DoubleSide,
+                emissive: new THREE.Color("lightyellow"),
+                emissiveIntensity: 0.5,
+                //transparent: true,
+                //opacity: 0.75,
+            }),
+            // 6. Phong material used for the shockwave of a explosion:
+            new THREE.MeshPhongMaterial({
+                color: new THREE.Color("lightyellow"),
+                side: THREE.DoubleSide,
+                emissive: new THREE.Color("yellow"),
+                emissiveIntensity: 0.5,
+                //transparent: true,
+                //opacity: 0.75,
+            }),
+        ];
+
+        // ================================================================
+        // Add functions:
+        // ----------------------------------------------------------------
+        // Object functions ( lights, meshes, etc. ):
+        
+        /**
+         * MakePlain() creates a template plane geometry, which acts as the
+         * desert floor of our scene.
+         */
+        function makePlain() {
+
+            var params = plainParams;
+
+            var plainGeom = new THREE.PlaneGeometry( 
+                params.width,
+                params.height,
+                params.wSegments,
+                params.hSegments,
+            );
+            var plainMesh = new THREE.Mesh( plainGeom, sceneMaterials[0] );
+            // Adjust plain as needed:
+            plainMesh.rotation.set( (Math.PI/2), 0, 0 );
+            // Return the completed plain:
+            return plainMesh;
+        }
+
+        /**
+         * function makeDeathStar() creates the death star, by generating
+         * a new Object3D and calling sub-functions to add meshes into it.
+         */
+        function makeDeathStar(){
+
+            var params = deathStarParams;
+
+            var deathStar = new THREE.Object3D();
+
+            // Add Death Star hull:
+            var hullGeom = new THREE.SphereGeometry( 
+                params.hullRadius, // radius
+                params.hullWSegments, // width segments
+                params.hullHSegments, // height segments
+                0, // phiStart ( default )
+                (Math.PI * 2), //phiLength ( default )
+                params.hullThetaStart, // thetaStart: controls hole in the sphere.
+                Math.PI, // thetaLength ( default )
+            );
+            var hullMesh = new THREE.Mesh( hullGeom, sceneMaterials[1] );
+            hullMesh.rotation.set( Math.PI/2, 0, 0); // align mesh to Z axis.
+
+            // Add Death Star cannon:
+            var cannonGeom = new THREE.SphereGeometry(
+                params.hullRadius, // radius
+                params.hullWSegments, // width segments
+                params.hullHSegments, // height segments
+                0, // phiStart ( default )
+                (Math.PI * 2), //phiLength ( default )
+                0, // thetaStart (default )
+                params.cannonThetaLength, // thetaLength: controls where sphere
+                                          // starts generating length-wise.
+            );
+            var cannonMesh = new THREE.Mesh( cannonGeom, sceneMaterials[2] );
+            // Adjust cannon position:
+            cannonMesh.position.set( 0, 0, (params.hullRadius * 1.911));
+            cannonMesh.rotation.set( (-Math.PI/2), 0, 0); // Fit cannon
+
+            // Add Death Star ring:
+            var ringGeometry = new THREE.CylinderGeometry(
+                params.hullRadius, // radiusTop
+                params.hullRadius, // radiusBottom
+                0.25, // height
+                64, // radialSegments
+                1, // heightSegments
+                true, // open-ended
+            );
+            var ringMesh = new THREE.Mesh( ringGeometry, sceneMaterials[2] );
+            ringMesh.rotation.set( (Math.PI/7), 0 ,0);
+
+            // combine meshes into the death star:
+            deathStar.add( hullMesh );
+            deathStar.add( cannonMesh );
+            deathStar.add( ringMesh );
+
+            var laser = addLaser();
+            deathStar.add(laser);
+
+            // Adjust base merging lasers to align with the cannon
+            laser.rotation.set( (Math.PI/2), 0, 0)
+            laser.position.set( 0, 0, ((deathStarParams.hullRadius * 1.87)/2));
+
+            return deathStar;
+        }
+
+        /**
+         * addLaser() creates the laser the Death Star will shoot. It is comprised
+         * of a cone representing 8 joining lasers at the base, as well as one
+         * main laser which can be adjusted and illuminated dynamically.
+         */
+        function addLaser() {
+
+            var params = laserParams;
+
+            var laser = new THREE.Object3D();
+
+            // Make the 8-beam conjoining base of the laser from a cone:
+            var laserBaseGeom = new THREE.ConeGeometry( 
+                (deathStarParams.hullThetaStart * deathStarParams.hullRadius) + 0.1, // radius
+                //params.laserMergeRadius, // radius
+                params.laserMergeHeight, // height
+                params.laserMergeRSegs, // radial segments
+                1, // height segments
+                params.laserMergeOpenEnded, // open-ended.
+            );
+            var laserBaseMesh = new THREE.Mesh( laserBaseGeom, sceneMaterials[3] );
+            laserBaseMesh.position.set( 0, (params.laserMergeHeight/2), 0);
+            laser.add( laserBaseMesh );
+
+            // Add illumination to the merging lasers.
+            var baseLight = makePointLight("green");
+            baseLight.position.set( 0, (params.laserMergeHeight), 0);
+            laser.add(baseLight);
+
+            // Add conjoining point of all 8 lasers:
+            var beamBaseGeom = new THREE.SphereGeometry( params.beamBaseRadius, 16 );
+            var beamBaseMesh = new THREE.Mesh( beamBaseGeom, sceneMaterials[4] );
+            beamBaseMesh.position.set( 0, (params.laserMergeHeight), 0);
+            laser.add( beamBaseMesh );
+
+            // Add the main laserbeam cylander:
+            var mainLaserGeom = new THREE.CylinderGeometry(
+                params.beamRadius, // cylander top radius
+                params.beamRadius, // cylander radius bottom
+                params.beamHeight, // cylander height
+            );
+            var mainLaserMesh = new THREE.Mesh( mainLaserGeom, sceneMaterials[4] );
+            // Adjust the laserbeam so that it starts from the beam base always:
+            mainLaserMesh.position.set( 0, (params.beamHeight/2)+params.laserMergeHeight, 0)
+            laser.add( mainLaserMesh );
+
+            // Add illumination to the main laserbeam:
+            var laserLight = makeLaserLight();
+            laserLight.position.set( 0, params.laserMergeHeight, 0 );
+            laser.add( laserLight );
+
+            return laser;
+        }
+
+        /**
+         * makeExplosion() generates an explosion at the origin, used to indicate 
+         * the detonation of the Death Star's laserbeam on Tatooine.
+         */
+        function makeExplosion() {
+
+            var params = explosionParams;
+
+            var explosion = new THREE.Object3D();
+
+            // Add a central core to the explosion:
+            var coreGeom = new THREE.SphereGeometry(
+                params.coreRadius, // radius
+                params.coreSegments, // Width segments
+                params.coreSegments, // Height segments
+            );
+            var coreMesh = new THREE.Mesh( coreGeom, sceneMaterials[5] );
+            explosion.add( coreMesh );
+
+            // Add the shockwave to the explosion:
+            var waveGeom = new THREE.RingGeometry(
+                params.coreRadius, // inner radius
+                params.coreRadius * ( params.coreRadius / 5 ), // outer radius
+                32, // theta segments ( roundness )
+                1, // phi segemnts
+            );
+            var waveMesh = new THREE.Mesh( waveGeom, sceneMaterials[6] );
+            waveMesh.rotation.set(Math.PI/2, 0, 0);
+            waveMesh.position.set( 0, 0.5, 0 );
+            explosion.add( waveMesh );
+
+            // Add illumination to the explosion:
+            var pointLight = makePointLight("lightyellow");
+            pointLight.position.set( 0, 0.5, 0);
+            explosion.add( pointLight );
+
+            // Return the completed explosion:
+            return explosion;
+        }
+
+         // ----------------------------------------------------------------
+        // Lighting functions:
+        // This is where we will add the ambient light, the point lights from
+        // the twin suns, and the directional/spotlight from the laser.
+
+        /**
+         * makeAmbientLight() generates a new ambient light to illuminate the scene.
+         */
+        function makeAmbientLight() {
+            
+            var ambientLight = new THREE.AmbientLight(
+                new THREE.Color("grey"), // color
+                1 // intensity
+            );
+
+            return ambientLight;
+        }
+
+        /**
+         * makePointLight() generates a new point light. Used with the twin suns
+         * of the scene.
+         */
+        function makePointLight( lightColor ) {
+
+            var params = pointLightParams;
+            var pointLight = new THREE.PointLight(
+                new THREE.Color( lightColor ),
+                params.intensity,
+                params.distance,
+                params.decay,
+            );
+            return pointLight;
+        }
+
+        /**
+         * makeLaserLight() creates a new directional light, which is then
+         * applied to the Death Star laser to help make it glow / illuminate buildings.
+         */
+        function makeLaserLight() {
+
+            var laserLight = new THREE.DirectionalLight(
+                new THREE.Color("green"), // color
+                1, // intensity
+            );
+            // Since the light's target is automatically the origin, no target is needed.
+            return laserLight;
+        }
+        
+
+        // ----------------------------------------------------------------
+        // GUI / animation / camera functions:
+
+        /**
+         * updateDeathStar() takes the parameters for the Death Star's
+         * position and updates them, then re-renders the scene accordingly.
+         * This will be used for animation purposes.
+         */
+        function updateDeathStar() {
+
+            var params = deathStarParams;
+            deathStar.position.set( 
+                params.X,
+                params.Y,
+                params.Z,
+            );
+            deathStar.lookAt( 0, 0, 0); // Lock Death Star to face origin point.
+        }
+
+        /**
+         * makeCamera() generates a new adjustible camera for the scene.
+         */
+        function makeCamera() {
+
+            var params = cameraParams;
+
+            var camera = new THREE.PerspectiveCamera(
+                params.fov,
+                params.aspectRatio,
+                params.near,
+                params.far,
+            );
+            // Adjust camera position:
+            camera.position.set(params.eyeX, params.eyeY, params.eyeZ);
+            camera.up.set(params.upX, params.upY, params.upZ);
+            camera.lookAt(new THREE.Vector3(params.atX, params.atY, params.atZ));
+            return camera;
+        }
+        
+        function updateCamera() {
+            scene.remove(camera);
+            camera = makeCamera();
+            scene.add(camera);
+
+            if (enableOrbitControls) {
+                cameraControls = new THREE.OrbitControls(camera, canvas);
+                setupCameraControls(cameraControls);
+            }
+            render();
+        }
+
+        function setupCameraControls(cameraControls) {
+            cameraControls.addEventListener('change', render);
+            cameraControls.update();
+            console.log("setUpCameraControls: Camera controls set.")
+        }
+
+        function render() {
+            // A render function; assume global variables scene, renderer, and camera
+            renderer.render(scene, camera);
+        }
+
+        // ================================================================
+        //                 BUILD SCENE:
+        // ================================================================
+        
+        var scene = new THREE.Scene();
+
+        // ----------------------------------------------------------------
+        // Add renderer:
+        var renderer = new THREE.WebGLRenderer();
+
+        // ----------------------------------------------------------------
+        // Add canvas:             
+        var canvas = renderer.domElement;
+        var parent = document.body;
+        parent.appendChild(canvas);
+        renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+        renderer.setClearColor(new THREE.Color(0x2f2f2f), 1);
+
+        // ----------------------------------------------------------------
+        // Add camera:
+        var camera = makeCamera();
+        scene.add(camera);
+
+        var enableOrbitControls = true; // !!! IMPORTANT !!! 
+
+        var cameraControls = new THREE.OrbitControls(camera, canvas);
+        if (enableOrbitControls == true ) { //only configure if we enable it
+            //set up camera controls so we can use mouse to pan around scene
+            setupCameraControls(cameraControls);
+        }
+        // ----------------------------------------------------------------
+        // Add objects:
+        var ambientLight = makeAmbientLight();
+        scene.add(ambientLight);
+
+        var testPointLight = makePointLight("grey");
+        testPointLight.position.set( 0, 15, 0);
+        scene.add(testPointLight);
+
+        var desert = makePlain();
+        scene.add(desert);
+
+        var deathStar = makeDeathStar();
+        scene.add(deathStar);
+
+        updateDeathStar();
+
+        var explosion = makeExplosion();
+        //scene.add(explosion);
+
+        var testBuilding = new THREE.BoxGeometry(5, 5, 5);
+        var testMesh =  new THREE.Mesh( testBuilding, sceneMaterials[1] );
+        scene.add( testMesh );
+
+        // Render the complete scene.
+        render();
+
+        // ================================================================
+        // Add camera controls:
+
+        document.addEventListener("keypress", (event) => {
+            const key = event.key;
+            switch(key) {
+                case "1": // Origin, looking towards the Death Star.
+                    // change camera position:
+                    cameraParams.eyeX = (deathStarParams.X/2)*-1;
+                    cameraParams.eyeY = 3;
+                    cameraParams.eyeZ = (deathStarParams.Z/2)*-1;
+                    // change camera target:
+                    cameraParams.atX = deathStarParams.X;
+                    cameraParams.atY = deathStarParams.Y/2;
+                    cameraParams.atZ = deathStarParams.Z;
+                    updateCamera();
+                    break;
+                case "2": // The bridge of the Death Star, looking at Tatooine
+                    // change camera position:
+                    cameraParams.eyeX = deathStarParams.X;
+                    cameraParams.eyeY = deathStarParams.Y+(deathStarParams.hullRadius);
+                    cameraParams.eyeZ = deathStarParams.Z;
+                    // change camera target:
+                    cameraParams.atX = 0;
+                    cameraParams.atY = 0;
+                    cameraParams.atZ = 0;
+                    updateCamera();
+                    break;
+            }
+        });
+
+        // ================================================================
+        // Add GUI:
+
+
+
+
+
+    </script>
+</body>
+
+</html>
