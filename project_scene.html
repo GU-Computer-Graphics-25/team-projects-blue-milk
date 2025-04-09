@@ -463,7 +463,7 @@
         var camera = makeCamera();
         scene.add(camera);
 
-        var enableOrbitControls = false;
+        var enableOrbitControls = true;
 
         var cameraControls = new THREE.OrbitControls(camera, canvas);
         if (enableOrbitControls == true ) { //only configure if we enable it
@@ -500,6 +500,7 @@
         // ================================================================
         // Add camera setup:
 
+        /*
         var state = TW.cameraSetup(renderer,
             scene,
             {
@@ -510,6 +511,7 @@
         
         state.axisHelper.visible = true;
         TW.render();
+        */
 
         // ================================================================
         // Add GUI:
