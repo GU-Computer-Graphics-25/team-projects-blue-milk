@@ -98,7 +98,7 @@
                     color: new THREE.Color("lightgreen"),
                     side: THREE.DoubleSide,
                     emissive: new THREE.Color("green"),
-                    emissiveIntensity: 128,
+                    emissiveIntensity: 255.0,
                     transparent: true,
                     opacity: 0.5,
                     wireframe: true,
@@ -213,7 +213,8 @@
                 deathStar.add(ringMesh);
 
                 var laser = addLaser();
-                deathStar.add(laser);
+                
+                // deathStar.add(laser);
 
                 // Adjust base merging lasers to align with the cannon
                 laser.rotation.set(Math.PI / 2, 0, 0);
