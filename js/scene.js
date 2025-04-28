@@ -246,3 +246,18 @@ function createStairBuilding(params, materials) {
     stairBuildingObject.add(stairBuildingTopMesh);
     return stairBuildingObject;
 }
+
+function createSun(radius, xpos, ypos, zpos, material) {
+    let sunObject = new THREE.Object3D();
+    let sunGeom = new THREE.SphereGeometry(radius, 32, 32);
+    let sunMesh = new THREE.Mesh(sunGeom, material);
+    sunMesh.position.set(xpos, ypos, zpos);
+    let sunLight = new THREE.DirectionalLight(material.color, 0.5);
+    sunLight.position.set(xpos, ypos, zpos);
+    sunLight.target.position.set(0, 0, 0);
+    sunLight.castShadow = true;
+
+    sunObject.add(sunMesh);
+    sunObject.add(sunLight);
+    return sunObject;
+}

@@ -23,9 +23,9 @@
 
             var deathStarParams = {
                 // ---- coordinate positions: -----
-                X: 200,
-                Y: 200,
-                Z: -100,
+                X: 400,
+                Y: 400,
+                Z: -200,
                 // ----- Outer shell (hull): ------
                 hullRadius: 100,
                 hullWSegments: 32,
@@ -213,7 +213,7 @@
                 deathStar.add(ringMesh);
 
                 var laser = addLaser();
-                deathStar.add(laser);
+                // deathStar.add(laser);
 
                 // Adjust base merging lasers to align with the cannon
                 laser.rotation.set(Math.PI / 2, 0, 0);
@@ -435,7 +435,7 @@
             const groundSceneMaterials = {
                 basePlate: new THREE.MeshPhongMaterial({
                     specular: new THREE.Color("white"),
-                    shininess: 0,
+                    shininess: 0.1,
                     color: new THREE.Color("tan"),
                     side: THREE.DoubleSide,
                     map: loader.load("static/desert.png", render),
@@ -443,7 +443,7 @@
                 centralBuilding: {
                     centralBuildingTop: new THREE.MeshPhongMaterial({
                         specular: new THREE.Color("white"),
-                        shininess: 0,
+                        shininess: 0.1,
                         color: new THREE.Color("white"),
                         side: THREE.DoubleSide,
                         map: loader.load(
@@ -453,7 +453,7 @@
                     }),
                     centralBuildingBase: new THREE.MeshPhongMaterial({
                         specular: new THREE.Color("white"),
-                        shininess: 0,
+                        shininess: 0.1,
                         color: new THREE.Color("white"),
                         side: THREE.DoubleSide,
                         map: loader.load(
@@ -465,14 +465,14 @@
                 siloBuilding: {
                     siloBuildingTop: new THREE.MeshPhongMaterial({
                         specular: new THREE.Color("white"),
-                        shininess: 0,
+                        shininess: 0.1,
                         color: new THREE.Color("white"),
                         side: THREE.DoubleSide,
                         map: loader.load("static/siloBuildingTop.png", render),
                     }),
                     siloBuildingBaseTopBottom: new THREE.MeshPhongMaterial({
                         specular: new THREE.Color("white"),
-                        shininess: 0,
+                        shininess: 0.1,
                         color: new THREE.Color("white"),
                         side: THREE.DoubleSide,
                         map: loader.load(
@@ -482,7 +482,7 @@
                     }),
                     siloBuildingBaseWall: new THREE.MeshPhongMaterial({
                         specular: new THREE.Color("white"),
-                        shininess: 0,
+                        shininess: 0.1,
                         color: new THREE.Color("white"),
                         side: THREE.DoubleSide,
                         map: loader.load(
@@ -493,7 +493,7 @@
                 },
                 crateBuilding: new THREE.MeshPhongMaterial({
                     specular: new THREE.Color("white"),
-                    shininess: 0,
+                    shininess: 0.1,
                     color: new THREE.Color("white"),
                     side: THREE.DoubleSide,
                     map: loader.load("static/crateBuiding.png", render),
@@ -501,14 +501,14 @@
                 stairBuilding: {
                     stairBuildingTop: new THREE.MeshPhongMaterial({
                         specular: new THREE.Color("white"),
-                        shininess: 0,
+                        shininess: 0.1,
                         color: new THREE.Color("white"),
                         side: THREE.DoubleSide,
                         map: loader.load("static/stairBuildingTop.png", render),
                     }),
                     stairBuildingBase: new THREE.MeshPhongMaterial({
                         specular: new THREE.Color("white"),
-                        shininess: 0,
+                        shininess: 0.1,
                         color: new THREE.Color("white"),
                         side: THREE.DoubleSide,
                         map: loader.load(
@@ -517,6 +517,22 @@
                         ),
                     }),
                 },
+                orangeSun: new THREE.MeshLambertMaterial({
+                    color: 0xff6600,
+                    transparent: true,
+                    opacity: 0.5,
+                    depthWrite: false,
+                    emmissive: new THREE.Color("orange"),
+                    emissiveIntensity: 128,
+                }),
+                yellowSun: new THREE.MeshLambertMaterial({
+                    color: 0xffff00,
+                    transparent: true,
+                    opacity: 0.5,
+                    depthWrite: false,
+                    emmissive: new THREE.Color("yellow"),
+                    emissiveIntensity: 128,
+                }),
             };
 
             const buildingParams = {
@@ -536,9 +552,37 @@
                 stairBuildingBaseHeight: 20,
                 stairBuildingTopLength: 20,
                 stairBuildingTopHeight: 10,
+
+                orangeSunRadius: 150,
+                orangeSunX: -400,
+                orangeSunY: 450,
+                orangeSunZ: -400,
+
+                yellowSunRadius: 200,
+                yellowSunX: 400,
+                yellowSunY: 450,
+                yellowSunZ: 400,
             };
 
             scene.add(createGroundScene(buildingParams, groundSceneMaterials));
+            scene.add(
+                createSun(
+                    buildingParams.orangeSunRadius,
+                    buildingParams.orangeSunX,
+                    buildingParams.orangeSunY,
+                    buildingParams.orangeSunZ,
+                    groundSceneMaterials.orangeSun
+                )
+            );
+            scene.add(
+                createSun(
+                    buildingParams.yellowSunRadius,
+                    buildingParams.yellowSunX,
+                    buildingParams.yellowSunY,
+                    buildingParams.yellowSunZ,
+                    groundSceneMaterials.yellowSun
+                )
+            );
 
             // Render the complete scene.
             render();
