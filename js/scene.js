@@ -281,5 +281,5 @@ function createSunPath(lowerControlPoint, upperControlPoint, steps, material) {
     pathObject.add(lowerPathMesh);
     pathObject.add(upperPathMesh);
 
-    return pathObject;
+    return [pathObject, fullPath];
 }

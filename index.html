@@ -517,21 +517,17 @@
                         ),
                     }),
                 },
-                orangeSun: new THREE.MeshLambertMaterial({
+                orangeSun: new THREE.MeshPhongMaterial({
                     color: 0xff6600,
                     transparent: true,
                     opacity: 0.5,
                     depthWrite: false,
-                    emmissive: new THREE.Color("orange"),
-                    emissiveIntensity: 128,
                 }),
                 yellowSun: new THREE.MeshLambertMaterial({
                     color: 0xffff00,
                     transparent: true,
                     opacity: 0.5,
                     depthWrite: false,
-                    emmissive: new THREE.Color("yellow"),
-                    emissiveIntensity: 128,
                 }),
                 bezierCurveMaterial: new THREE.LineBasicMaterial({
                     color: 0xffffff,
@@ -569,10 +565,10 @@
                     [400, 450, 400],
                 ],
                 orangeSunLowerControlPoints: [
-                    [-400, 450, -400],
-                    [-310, 1066, -310],
-                    [310, 1066, 310],
                     [400, 450, 400],
+                    [310, 1066, 310],
+                    [-310, 1066, -310],
+                    [-400, 450, -400],
                 ],
 
                 yellowSunRadius: 200,
@@ -582,15 +578,14 @@
             };
 
             scene.add(createGroundScene(buildingParams, groundSceneMaterials));
-            // scene.add(
-            //     createSun(
-            //         buildingParams.orangeSunRadius,
-            //         buildingParams.orangeSunX,
-            //         buildingParams.orangeSunY,
-            //         buildingParams.orangeSunZ,
-            //         groundSceneMaterials.orangeSun
-            //     )
-            // );
+            let orangeSun = createSun(
+                buildingParams.orangeSunRadius,
+                buildingParams.orangeSunX,
+                buildingParams.orangeSunY,
+                buildingParams.orangeSunZ,
+                groundSceneMaterials.orangeSun
+            );
+            scene.add(orangeSun);
             // scene.add(
             //     createSun(
             //         buildingParams.yellowSunRadius,
@@ -600,17 +595,43 @@
             //         groundSceneMaterials.yellowSun
             //     )
             // );
-            scene.add(
-                createSunPath(
-                    buildingParams.orangeSunLowerControlPoints,
-                    buildingParams.orangeSunUpperControlPoints,
-                    250,
-                    groundSceneMaterials.bezierCurveMaterial
-                )
+            let [orangeSunPathMesh, orangeSunPathPoints] = createSunPath(
+                buildingParams.orangeSunLowerControlPoints,
+                buildingParams.orangeSunUpperControlPoints,
+                250,
+                groundSceneMaterials.bezierCurveMaterial
             );
+            scene.add(orangeSunPathMesh);
+            console.log(orangeSun);
 
             // Render the complete scene.
             render();
+
+            let currentPointIndex = 0;
+
+            function animate() {
+                requestAnimationFrame(animate);
+
+                // Get current point in world coordinates
+                const point = orangeSunPathPoints[currentPointIndex].clone();
+
+                // If the sun is part of a parent container, we need to convert the point
+                // to the parent's local space
+                if (orangeSun.parent) {
+                    orangeSun.parent.worldToLocal(point);
+                }
+
+                // Set position directly
+                orangeSun.position.copy(point);
+
+                // Move to next point
+                currentPointIndex =
+                    (currentPointIndex + 1) % orangeSunPathPoints.length;
+
+                render();
+            }
+
+            animate();
 
             // ================================================================
             // Add camera controls:
