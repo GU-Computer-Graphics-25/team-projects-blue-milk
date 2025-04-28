@@ -533,6 +533,11 @@
                     emmissive: new THREE.Color("yellow"),
                     emissiveIntensity: 128,
                 }),
+                bezierCurveMaterial: new THREE.LineBasicMaterial({
+                    color: 0xffffff,
+                    linewidth: 2,
+                    // visible: false,
+                }),
             };
 
             const buildingParams = {
@@ -557,6 +562,18 @@
                 orangeSunX: -400,
                 orangeSunY: 450,
                 orangeSunZ: -400,
+                orangeSunUpperControlPoints: [
+                    [-400, 450, -400],
+                    [-410, -300, -410],
+                    [410, -300, 410],
+                    [400, 450, 400],
+                ],
+                orangeSunLowerControlPoints: [
+                    [-400, 450, -400],
+                    [-310, 1066, -310],
+                    [310, 1066, 310],
+                    [400, 450, 400],
+                ],
 
                 yellowSunRadius: 200,
                 yellowSunX: 400,
@@ -565,22 +582,30 @@
             };
 
             scene.add(createGroundScene(buildingParams, groundSceneMaterials));
+            // scene.add(
+            //     createSun(
+            //         buildingParams.orangeSunRadius,
+            //         buildingParams.orangeSunX,
+            //         buildingParams.orangeSunY,
+            //         buildingParams.orangeSunZ,
+            //         groundSceneMaterials.orangeSun
+            //     )
+            // );
+            // scene.add(
+            //     createSun(
+            //         buildingParams.yellowSunRadius,
+            //         buildingParams.yellowSunX,
+            //         buildingParams.yellowSunY,
+            //         buildingParams.yellowSunZ,
+            //         groundSceneMaterials.yellowSun
+            //     )
+            // );
             scene.add(
-                createSun(
-                    buildingParams.orangeSunRadius,
-                    buildingParams.orangeSunX,
-                    buildingParams.orangeSunY,
-                    buildingParams.orangeSunZ,
-                    groundSceneMaterials.orangeSun
-                )
-            );
-            scene.add(
-                createSun(
-                    buildingParams.yellowSunRadius,
-                    buildingParams.yellowSunX,
-                    buildingParams.yellowSunY,
-                    buildingParams.yellowSunZ,
-                    groundSceneMaterials.yellowSun
+                createSunPath(
+                    buildingParams.orangeSunLowerControlPoints,
+                    buildingParams.orangeSunUpperControlPoints,
+                    250,
+                    groundSceneMaterials.bezierCurveMaterial
                 )
             );
 

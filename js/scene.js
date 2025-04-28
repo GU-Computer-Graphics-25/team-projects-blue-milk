@@ -261,3 +261,25 @@ function createSun(radius, xpos, ypos, zpos, material) {
     sunObject.add(sunLight);
     return sunObject;
 }
+
+function createSunPath(lowerControlPoint, upperControlPoint, steps, material) {
+    let pathObject = new THREE.Object3D();
+
+    let [lowerPathGeom, lowerPathPoints] = createBezierCurve(
+        lowerControlPoint,
+        steps
+    );
+
+    let [upperPathGeom, upperPathPoints] = createBezierCurve(
+        upperControlPoint,
+        steps
+    );
+    let fullPath = lowerPathPoints.concat(upperPathPoints);
+
+    let lowerPathMesh = new THREE.Line(lowerPathGeom, material);
+    let upperPathMesh = new THREE.Line(upperPathGeom, material);
+    pathObject.add(lowerPathMesh);
+    pathObject.add(upperPathMesh);
+
+    return pathObject;
+}

@@ -44,3 +44,52 @@ function setupCameraControls(cameraControls) {
     cameraControls.addEventListener("change", render);
     cameraControls.update();
 }
+
+// Used in the solution but doesn't need modification
+function createPoint(P, radius, material) {
+    // returns a mesh for a sphere of given radius and material at the
+    // given location (a list of three coordinates), suitable for adding
+    // to the scene. More for debugging than anything else.
+    radius = radius || 0.1;
+    material = material || new THREE.MeshNormalMaterial();
+    var mesh = new THREE.Mesh(new THREE.SphereGeometry(radius), material);
+    mesh.position.set(P[0], P[1], P[2]);
+    return mesh;
+}
+
+// Used in the solution but doesn't need modification
+function showCP(cpList, radius) {
+    for (var i = 0; i < cpList.length; i++) {
+        scene.add(createPoint(cpList[i], radius));
+    }
+}
+
+function createBezierCurve(cpList, steps) {
+    // Using the given list of control points, returns a
+    // THREE.Geometry comprising 'steps' vertices, suitable for
+    // combining with a material and creating a THREE.Line out of.
+    var N = Math.round(steps) + 1; // number of vertices
+    let path = [];
+
+    var geometry = new THREE.Geometry();
+    var curve = new THREE.CubicBezierCurve3();
+
+    var cp = cpList[0];
+    curve.v0 = new THREE.Vector3(cp[0], cp[1], cp[2]);
+    cp = cpList[1];
+    curve.v1 = new THREE.Vector3(cp[0], cp[1], cp[2]);
+    cp = cpList[2];
+    curve.v2 = new THREE.Vector3(cp[0], cp[1], cp[2]);
+    cp = cpList[3];
+    curve.v3 = new THREE.Vector3(cp[0], cp[1], cp[2]);
+
+    var j,
+        stepSize = 1 / (N - 1);
+    for (j = 0; j < N; j++) {
+        geometry.vertices.push(curve.getPoint(j * stepSize));
+        // TODO 6.1: what is the previous line doing?
+        // What else can we do with this information at this point in the code?
+        path.push(curve.getPoint(j * stepSize)); // add the point to the path array
+    }
+    return [geometry, path];
+}
