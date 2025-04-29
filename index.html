@@ -27,7 +27,7 @@
                 Y: 400,
                 Z: -200,
                 // ----- Outer shell (hull): ------
-                hullRadius: 100,
+                hullRadius: 80,
                 hullWSegments: 32,
                 hullHSegments: 32,
                 hullThetaStart: 0.3,
@@ -72,6 +72,7 @@
                 upX: 0,
                 upY: 1,
                 upZ: 0,
+                viewPoint: 0,
             };
             let cameraLaserAngle = new THREE.Vector3(); // Test for tracking position points.
 
@@ -214,7 +215,7 @@
                 deathStar.add(ringMesh);
 
                 var laser = addLaser();
-                // deathStar.add(laser);
+                 deathStar.add(laser);
 
                 // Adjust base merging lasers to align with the cannon
                 laser.rotation.set(Math.PI / 2, 0, 0);
@@ -438,7 +439,7 @@
             var camera = setupCamera(cameraParams);
             scene.add(camera);
 
-            var enableOrbitControls = true; // !!! IMPORTANT !!!
+            var enableOrbitControls = false; // !!! IMPORTANT !!!
 
             var cameraControls = new THREE.OrbitControls(camera, canvas);
             if (enableOrbitControls == true) {
@@ -673,15 +674,9 @@
                 const key = event.key;
                 switch (key) {
                     case "1": // Origin, looking towards the Death Star.
-                        // change camera position:
-                        cameraParams.eyeX = (deathStarParams.X / 2) * -1;
-                        cameraParams.eyeY = 3;
-                        cameraParams.eyeZ = (deathStarParams.Z / 2) * -1;
-                        // change camera target:
-                        cameraParams.atX = deathStarParams.X;
-                        cameraParams.atY = deathStarParams.Y / 2;
-                        cameraParams.atZ = deathStarParams.Z;
+                        cameraParams.viewPoint = 1;
                         updateCamera();
+                        console.log( "Camera angle changed to viewpoint 1");
                         break;
                     case "2": // The bridge of the Death Star, looking at Tatooine
                         // change camera position:
@@ -698,18 +693,22 @@
                     case "w": // Move the Death Star forward.
                         deathStarParams.Z += 1;
                         updateDeathStar();
+                        updateCamera();
                         break;
                     case "a": // Move the Death Star left.
                         deathStarParams.X += 1;
                         updateDeathStar();
+                        updateCamera();
                         break;
                      case "s": // Move the Death Star backwards.
                         deathStarParams.Z -= 1;
                         updateDeathStar();
+                        updateCamera();
                         break;
                     case "d": // Move the Death Star right.
                         deathStarParams.X -= 1;
                         updateDeathStar();
+                        updateCamera();
                         break;
                 }
             });
