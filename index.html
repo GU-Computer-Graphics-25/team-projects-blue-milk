@@ -73,6 +73,7 @@
                 upY: 1,
                 upZ: 0,
             };
+            let cameraLaserAngle = new THREE.Vector3(); // Test for tracking position points.
 
             // ================================================================
             // Add materials:
@@ -276,6 +277,7 @@
                 
                 //let cam2Position = new THREE.Vector3();
 
+                /*
                 beamBaseGeom.centroid = new THREE.Vector3();
 
                 for ( var i = 0, l = beamBaseGeom.vertices.lengt; i < l; i++ ) {
@@ -283,6 +285,17 @@
                 }
                 beamBaseGeom.centroid.divideScalar( beamBaseGeom.vertices.length );
                 console.log( "The beam-base position is " + beamBaseGeom.centroid );
+
+                cameraLaserAngle = beamBaseGeom.centroid;
+                console.log( cameraLaserAngle.x );
+                */
+
+                /*
+                var beamBasePosition = new THREE.Vector3( 0, params.laserMergeHeight, 0 );
+                laser.add( beamBasePosition );
+
+                console.log( " the beam base is at X: " + beamBasePosition.getComponent( 1 ) );
+                */
 
 
                 // Add the main laserbeam cylander:
