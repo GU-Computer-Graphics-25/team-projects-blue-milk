@@ -93,3 +93,8 @@ function createBezierCurve(cpList, steps) {
     }
     return [geometry, path];
 }
+
+function rotateAroundOrigin(obj, axis, angle) {
+    obj.position.applyAxisAngle(axis, angle);
+    obj.rotateOnAxis(axis, angle);
+}

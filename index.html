@@ -391,7 +391,9 @@
 
             // ----------------------------------------------------------------
             // Add renderer:
-            var renderer = new THREE.WebGLRenderer();
+            var renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
             // ----------------------------------------------------------------
             // Add canvas:
@@ -554,27 +556,19 @@
                 stairBuildingTopLength: 20,
                 stairBuildingTopHeight: 10,
 
-                orangeSunRadius: 150,
-                orangeSunX: -400,
-                orangeSunY: 450,
-                orangeSunZ: -400,
-                orangeSunUpperControlPoints: [
-                    [-400, 450, -400],
-                    [-410, -300, -410],
-                    [410, -300, 410],
-                    [400, 450, 400],
-                ],
-                orangeSunLowerControlPoints: [
-                    [400, 450, 400],
-                    [310, 1066, 310],
-                    [-310, 1066, -310],
-                    [-400, 450, -400],
-                ],
+                orangeSunRadius: 100,
+                orangeSunX: 0,
+                orangeSunY: 1000,
+                orangeSunZ: 0,
+                orangeSunRotationAxis: new THREE.Vector3(1, 0, 1),
+                orangeSunSpeed: 0.002,
 
                 yellowSunRadius: 200,
-                yellowSunX: 400,
-                yellowSunY: 450,
-                yellowSunZ: 400,
+                yellowSunX: 0,
+                yellowSunY: 600,
+                yellowSunZ: 0,
+                yellowSunRotationAxis: new THREE.Vector3(-1, 0, 1),
+                yellowSunSpeed: 0.001,
             };
 
             scene.add(createGroundScene(buildingParams, groundSceneMaterials));
@@ -586,48 +580,32 @@
                 groundSceneMaterials.orangeSun
             );
             scene.add(orangeSun);
-            // scene.add(
-            //     createSun(
-            //         buildingParams.yellowSunRadius,
-            //         buildingParams.yellowSunX,
-            //         buildingParams.yellowSunY,
-            //         buildingParams.yellowSunZ,
-            //         groundSceneMaterials.yellowSun
-            //     )
-            // );
-            let [orangeSunPathMesh, orangeSunPathPoints] = createSunPath(
-                buildingParams.orangeSunLowerControlPoints,
-                buildingParams.orangeSunUpperControlPoints,
-                250,
-                groundSceneMaterials.bezierCurveMaterial
+            let yellowSun = createSun(
+                buildingParams.yellowSunRadius,
+                buildingParams.yellowSunX,
+                buildingParams.yellowSunY,
+                buildingParams.yellowSunZ,
+                groundSceneMaterials.yellowSun
             );
-            scene.add(orangeSunPathMesh);
-            console.log(orangeSun);
+            scene.add(yellowSun);
 
             // Render the complete scene.
             render();
 
-            let currentPointIndex = 0;
-
             function animate() {
                 requestAnimationFrame(animate);
 
-                // Get current point in world coordinates
-                const point = orangeSunPathPoints[currentPointIndex].clone();
+                rotateAroundOrigin(
+                    orangeSun,
+                    buildingParams.orangeSunRotationAxis,
+                    buildingParams.orangeSunSpeed
+                );
 
-                // If the sun is part of a parent container, we need to convert the point
-                // to the parent's local space
-                if (orangeSun.parent) {
-                    orangeSun.parent.worldToLocal(point);
-                }
-
-                // Set position directly
-                orangeSun.position.copy(point);
-
-                // Move to next point
-                currentPointIndex =
-                    (currentPointIndex + 1) % orangeSunPathPoints.length;
-
+                rotateAroundOrigin(
+                    yellowSun,
+                    buildingParams.yellowSunRotationAxis,
+                    buildingParams.yellowSunSpeed
+                );
                 render();
             }
 
