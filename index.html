@@ -271,6 +271,20 @@
                 beamBaseMesh.position.set(0, params.laserMergeHeight, 0);
                 laser.add(beamBaseMesh);
 
+                // Add a tracking point to the beam base, which will set where
+                // the user's camera will be positioned at for camera angle 2:
+                
+                //let cam2Position = new THREE.Vector3();
+
+                beamBaseGeom.centroid = new THREE.Vector3();
+
+                for ( var i = 0, l = beamBaseGeom.vertices.lengt; i < l; i++ ) {
+                    beamBaseGeom.centroid.add( beamBaseGeom.vertices[i] );
+                }
+                beamBaseGeom.centroid.divideScalar( beamBaseGeom.vertices.length );
+                console.log( "The beam-base position is " + beamBaseGeom.centroid );
+
+
                 // Add the main laserbeam cylander:
                 var mainLaserGeom = new THREE.CylinderGeometry(
                     params.beamRadius, // cylander top radius
@@ -653,8 +667,7 @@
                     case "2": // The bridge of the Death Star, looking at Tatooine
                         // change camera position:
                         cameraParams.eyeX = deathStarParams.X;
-                        cameraParams.eyeY =
-                            deathStarParams.Y + deathStarParams.hullRadius;
+                        cameraParams.eyeY = deathStarParams.Y + deathStarParams.hullRadius;
                         cameraParams.eyeZ = deathStarParams.Z;
                         // change camera target:
                         cameraParams.atX = 0;
