@@ -405,9 +405,15 @@
              * This will be used for animation purposes.
              */
             function updateDeathStar() {
+
+                scene.remove( deathStar );
+
                 var params = deathStarParams;
                 deathStar.position.set(params.X, params.Y, params.Z);
                 deathStar.lookAt(0, 0, 0); // Lock Death Star to face origin point.
+
+                scene.add( deathStar );
+                render();
             }
 
             // ================================================================
@@ -637,7 +643,7 @@
             let currentPointIndex = 0;
 
             function animate() {
-                requestAnimationFrame(animate);
+                requestAnimationFrame( animate );
 
                 // Get current point in world coordinates
                 const point = orangeSunPathPoints[currentPointIndex].clone();
@@ -687,6 +693,23 @@
                         cameraParams.atY = 0;
                         cameraParams.atZ = 0;
                         updateCamera();
+                        break;
+                    // Add in movement controls for the Death Star:
+                    case "w": // Move the Death Star forward.
+                        deathStarParams.Z += 1;
+                        updateDeathStar();
+                        break;
+                    case "a": // Move the Death Star left.
+                        deathStarParams.X += 1;
+                        updateDeathStar();
+                        break;
+                     case "s": // Move the Death Star backwards.
+                        deathStarParams.Z -= 1;
+                        updateDeathStar();
+                        break;
+                    case "d": // Move the Death Star right.
+                        deathStarParams.X -= 1;
+                        updateDeathStar();
                         break;
                 }
             });
