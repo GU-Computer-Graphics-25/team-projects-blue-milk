@@ -45,8 +45,8 @@
                 beamBaseRadius: 0.5,
                 // ----- laserbeam proper: --------
                 beamRadius: 0.25,
-                beamHeight:
-                    Math.abs(deathStarParams.X) + Math.abs(deathStarParams.Z),
+                beamHeight: Math.abs(deathStarParams.X) + Math.abs(deathStarParams.Z),
+                isAnimated: true,
             };
             var explosionParams = {
                 coreRadius: 8,
@@ -614,7 +614,18 @@
                     buildingParams.yellowSunRotationAxis,
                     buildingParams.yellowSunSpeed
                 );
+
+                fireLaser();
+                
                 render();
+            }
+
+            function fireLaser() {
+
+                // check if the laserbeam is firing.
+                if ( deathStarParams.isAnimated == true ) {
+                    console.log( "IM FIRING MAH LASER BEAM!!!!");
+                }
             }
 
             animate();
