@@ -34,6 +34,7 @@
                 //cannonThetaStart: -0.3,
                 cannonThetaLength: -0.3, // Inverse of the theta start on the hull.
                 //cannonThetaLength: -Math.PI * 4,
+                isAnimated: false,
             };
             var laserParams = {
                 // cone base ( 8 merged lasers ):
@@ -41,12 +42,12 @@
                 laserMergeHeight: 4,
                 laserMergeRSegs: 8, // Radial segments
                 laserMergeOpenEnded: true,
+                laserMergeVisible: false,
                 // ----- laserBeam base: ----------
                 beamBaseRadius: 0.5,
                 // ----- laserbeam proper: --------
                 beamRadius: 0.25,
                 beamHeight: Math.abs(deathStarParams.X) + Math.abs(deathStarParams.Z),
-                isAnimated: true,
             };
             var explosionParams = {
                 coreRadius: 8,
@@ -253,6 +254,7 @@
                     sceneMaterials[3]
                 );
                 laserBaseMesh.position.set(0, params.laserMergeHeight / 2, 0);
+                laserBaseMesh.visible = laserParams.laserMergeVisible;
                 laser.add(laserBaseMesh);
 
                 // Add illumination to the merging lasers.
@@ -599,6 +601,8 @@
             // Render the complete scene.
             render();
 
+            var laserCharge = 0;
+
             // Animate the scene:
             function animate() {
                 requestAnimationFrame( animate );
@@ -616,7 +620,7 @@
                 );
 
                 fireLaser();
-                
+
                 render();
             }
 
@@ -624,7 +628,24 @@
 
                 // check if the laserbeam is firing.
                 if ( deathStarParams.isAnimated == true ) {
-                    console.log( "IM FIRING MAH LASER BEAM!!!!");
+
+                    // Charge the laserbeam! Render the laser base / conjoining lasers:
+                    laserParams.laserMergeVisible = true; // render laser base.
+                    if ( laserCharge < 50 ) { // wait.
+                        laserCharge += 1;
+                        console.log( "Reactor charging: " + laserCharge ); // TEST
+                        return;
+                    }
+                    else {
+                        console.log( "Reactor charged. Fire!"); // TEST
+                    }
+                    
+                    // Fire the laser! Render the laser and extend it's length:
+
+                    // Watch the firewors! Render the explosion and exponentially increase it's radius:
+
+                    // Reset animation:
+                    deathStarParams.isAnimated = false;
                 }
             }
 
@@ -671,6 +692,10 @@
                         deathStarParams.X += 10;
                         updateDeathStar();
                         updateCamera();
+                        break;
+                    case "f": // Fire the Death Star laser:
+                        deathStarParams.isAnimated = true;
+                        updateDeathStar();
                         break;
                 }
             });
