@@ -679,14 +679,8 @@
                         console.log( "Camera angle changed to viewpoint 1");
                         break;
                     case "2": // The bridge of the Death Star, looking at Tatooine
-                        // change camera position:
-                        cameraParams.eyeX = deathStarParams.X;
-                        cameraParams.eyeY = deathStarParams.Y + deathStarParams.hullRadius;
-                        cameraParams.eyeZ = deathStarParams.Z;
-                        // change camera target:
-                        cameraParams.atX = 0;
-                        cameraParams.atY = 0;
-                        cameraParams.atZ = 0;
+                       
+                        cameraParams.viewPoint = 2;
                         updateCamera();
                         break;
                     // Add in movement controls for the Death Star:

@@ -20,6 +20,16 @@ function setupCamera(cameraParameters) {
         cp.atY = deathStarParams.Y / 2;
         cp.atZ = deathStarParams.Z;
     }
+    else if ( cp.viewPoint == 2 ) {
+         // change camera position:
+         cp.eyeX = deathStarParams.X;
+         cp.eyeY = deathStarParams.Y + deathStarParams.hullRadius;
+         cp.eyeZ = deathStarParams.Z;
+         // change camera target:
+         cp.atX = 0;
+         cp.atY = 0;
+         cp.atZ = 0;
+    }
     
     camera.position.set(cp.eyeX, cp.eyeY, cp.eyeZ);
     camera.up.set(cp.upX, cp.upY, cp.upZ);
