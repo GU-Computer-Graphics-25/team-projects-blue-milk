@@ -8,10 +8,46 @@ function setupCamera(cameraParameters) {
         cp.near,
         cp.far
     );
-    // set the camera location and orientation
+    // set the camera location and orientation,
+    // based on current camera angle mode:
+    if ( cp.viewPoint == 1 ) {
+        // change camera position:
+        cp.eyeX = (deathStarParams.X / 2) * -1;
+        cp.eyeY = 3;
+        cp.eyeZ = (deathStarParams.Z / 2) * -1;
+        // change camera target:
+        cp.atX = deathStarParams.X;
+        cp.atY = deathStarParams.Y / 2;
+        cp.atZ = deathStarParams.Z;
+    }
+    else if ( cp.viewPoint == 2 ) {
+         // change camera position:
+         cp.eyeX = deathStarParams.X;
+         cp.eyeY = deathStarParams.Y + (deathStarParams.hullRadius / 2);
+         cp.eyeZ = deathStarParams.Z;
+         // change camera target:
+         cp.atX = 0;
+         cp.atY = 0;
+         cp.atZ = 0;
+    }
+    else {
+        // Change camera position:
+        cp.eyeX = 200;
+        cp.eyeY = 50;
+        cp.eyeZ = 150;
+        // Change camera target:
+        cp.atX = 0;
+        cp.atY = 0;
+        cp.atZ = 0;
+        //upX: 0,
+        //upY: 1,
+        //upZ: 0,
+    }
+    
     camera.position.set(cp.eyeX, cp.eyeY, cp.eyeZ);
     camera.up.set(cp.upX, cp.upY, cp.upZ);
     camera.lookAt(new THREE.Vector3(cp.atX, cp.atY, cp.atZ));
+    
     return camera;
 }
 
@@ -29,6 +65,8 @@ function addFaceCoordinates(as, at, bs, bt, cs, ct) {
 }
 
 function updateCamera() {
+
+    // Remove the camera from the scene.
     scene.remove(camera);
     camera = setupCamera(cameraParams);
     scene.add(camera);
