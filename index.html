@@ -673,15 +673,20 @@
             document.addEventListener("keypress", (event) => {
                 const key = event.key;
                 switch (key) {
+                    case "0": // Default camera position. Obit controls enabled?
+                        cameraParams.viewPoint = 0;
+                        updateCamera();
+                        console.log( "Camera angle changed to viewpoint 0");
+                        break;
                     case "1": // Origin, looking towards the Death Star.
                         cameraParams.viewPoint = 1;
                         updateCamera();
                         console.log( "Camera angle changed to viewpoint 1");
                         break;
                     case "2": // The bridge of the Death Star, looking at Tatooine
-                       
                         cameraParams.viewPoint = 2;
                         updateCamera();
+                        console.log( "Camera angle changed to viewpoint 2");
                         break;
                     // Add in movement controls for the Death Star:
                     case "w": // Move the Death Star forward.
@@ -690,7 +695,7 @@
                         updateCamera();
                         break;
                     case "a": // Move the Death Star left.
-                        deathStarParams.X += 1;
+                        deathStarParams.X -= 1;
                         updateDeathStar();
                         updateCamera();
                         break;
@@ -700,7 +705,7 @@
                         updateCamera();
                         break;
                     case "d": // Move the Death Star right.
-                        deathStarParams.X -= 1;
+                        deathStarParams.X += 1;
                         updateDeathStar();
                         updateCamera();
                         break;
