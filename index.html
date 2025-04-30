@@ -660,8 +660,8 @@
             // Add parameters for firing the Death Star laser:
 
             var laserChargeTime = 100;
-            var laserFireTime = 100;
-            var explosionTime = 100;
+            var laserFireTime = 50;
+            var explosionTime = 200;
 
             // Add functions for firing the Death Star laser:
 
@@ -694,13 +694,12 @@
                             explosionTime -= 1;
                             explosionParams.coreRadius = Math.pow(
                                 explosionParams.coreRadius,
-                                1.005
+                                1.005,
                             );
                             updateExplosion();
                             return;
                         }
                     }
-
                     // Reset animation:
                     resetLaserBeam();
                     console.log("Firing sequence complete");
@@ -711,9 +710,12 @@
                 deathStarParams.isAnimated = false;
                 laserParams.laserMergeVisible = false; // Hide laser base.
                 laserParams.beamVisible = false; // Hide the main laser.
+                explosionParams.visible = false;
                 laserChargeTime = 100;
                 laserFireTime = 100;
+                explosionTime = 100;
                 updateDeathStar();
+                updateExplosion();
             }
 
             animate();
