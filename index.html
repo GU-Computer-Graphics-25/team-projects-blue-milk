@@ -8,54 +8,79 @@
 
         <script src="./js/three.js"></script>
         <script src="./js/OrbitControls.js"></script>
-        <script src="./js/tw.js"></script>
         <script src="./js/SceneUtils.js"></script>
+        <script src="./js/dat.gui.js"></script>
 
         <script src="./js/scene.js"></script>
         <script src="./js/utils.js"></script>
     </head>
 
     <body>
-        <h1>Project Scene</h1>
+        <div>
+            <h1>Project Scene</h1>
+            <h2>
+                Controls:
+                <p><kbd>w</kbd>: move death star</p>
+                <p><kbd>a</kbd>: move death star</p>
+                <p><kbd>s</kbd>: move death star</p>
+                <p><kbd>d</kbd>: move death star</p>
+                <p><kbd>f</kbd>: fire laser from death star</p>
+                <p><kbd>1</kbd>: switch to camera view 1</p>
+                <p><kbd>2</kbd>: switch to camera view 2</p>
+                <p><kbd>0</kbd>(default): switch to camera view 0</p>
+                <p><kbd>r</kbd>: reset scene</p>
+            </h2>
+        </div>
         <script>
             // ================================================================
             // Add Global Parameters:
 
             var deathStarParams = {
                 // ---- coordinate positions: -----
-                X: 200,
-                Y: 200,
-                Z: -100,
+                X: 400,
+                Y: 400,
+                Z: -200,
                 // ----- Outer shell (hull): ------
-                hullRadius: 100,
+                hullRadius: 80,
                 hullWSegments: 32,
                 hullHSegments: 32,
                 hullThetaStart: 0.3,
                 // ----- cannon: ------------------
-                //cannonThetaStart: -0.3,
                 cannonThetaLength: -0.3, // Inverse of the theta start on the hull.
-                //cannonThetaLength: -Math.PI * 4,
+                isAnimated: false,
             };
             var laserParams = {
                 // cone base ( 8 merged lasers ):
-                laserMergeRadius: 2,
-                laserMergeHeight: 4,
+                laserMergeRadius: 5,
+                laserMergeHeight: 40,
                 laserMergeRSegs: 8, // Radial segments
                 laserMergeOpenEnded: true,
+                laserMergeVisible: false,
                 // ----- laserBeam base: ----------
-                beamBaseRadius: 0.5,
+                beamBaseRadius: 5,
                 // ----- laserbeam proper: --------
-                beamRadius: 0.25,
+                beamRadius: 1,
                 beamHeight:
                     Math.abs(deathStarParams.X) + Math.abs(deathStarParams.Z),
+                beamVisible: false,
+                laserColor: "lightgreen",
+                laserColorOptions: [
+                    "lightgreen",
+                    "red",
+                    "blue",
+                    "yellow",
+                    "black",
+                    "white",
+                ],
             };
             var explosionParams = {
-                coreRadius: 8,
+                coreRadius: 16,
                 coreSegments: 32, // width segments
+                visible: false,
             };
             var pointLightParams = {
                 intensity: 1,
-                distance: 0,
+                distance: 1,
                 decay: 2,
             };
             let cameraParams = {
@@ -72,10 +97,149 @@
                 upX: 0,
                 upY: 1,
                 upZ: 0,
+                viewPoint: 0,
             };
+            let cameraLaserAngle = new THREE.Vector3(); // Test for tracking position points.
 
             // ================================================================
             // Add materials:
+            let loader = new THREE.TextureLoader();
+
+            const groundSceneMaterials = {
+                basePlate: new THREE.MeshPhongMaterial({
+                    specular: new THREE.Color("white"),
+                    shininess: 0.1,
+                    color: new THREE.Color("tan"),
+                    side: THREE.DoubleSide,
+                    map: loader.load("static/desert.png", render),
+                }),
+                centralBuilding: {
+                    centralBuildingTop: new THREE.MeshPhongMaterial({
+                        specular: new THREE.Color("white"),
+                        shininess: 0.1,
+                        color: new THREE.Color("white"),
+                        side: THREE.DoubleSide,
+                        map: loader.load(
+                            "static/centralBuildingTop.png",
+                            render
+                        ),
+                    }),
+                    centralBuildingBase: new THREE.MeshPhongMaterial({
+                        specular: new THREE.Color("white"),
+                        shininess: 0.1,
+                        color: new THREE.Color("white"),
+                        side: THREE.DoubleSide,
+                        map: loader.load(
+                            "static/centralBuildingBase.png",
+                            render
+                        ),
+                    }),
+                },
+                siloBuilding: {
+                    siloBuildingTop: new THREE.MeshPhongMaterial({
+                        specular: new THREE.Color("white"),
+                        shininess: 0.1,
+                        color: new THREE.Color("white"),
+                        side: THREE.DoubleSide,
+                        map: loader.load("static/siloBuildingTop.png", render),
+                    }),
+                    siloBuildingBaseTopBottom: new THREE.MeshPhongMaterial({
+                        specular: new THREE.Color("white"),
+                        shininess: 0.1,
+                        color: new THREE.Color("white"),
+                        side: THREE.DoubleSide,
+                        map: loader.load(
+                            "static/siloBuildingBaseTopBottom.png",
+                            render
+                        ),
+                    }),
+                    siloBuildingBaseWall: new THREE.MeshPhongMaterial({
+                        specular: new THREE.Color("white"),
+                        shininess: 0.1,
+                        color: new THREE.Color("white"),
+                        side: THREE.DoubleSide,
+                        map: loader.load(
+                            "static/siloBuildingBaseWall.png",
+                            render
+                        ),
+                    }),
+                },
+                crateBuilding: new THREE.MeshPhongMaterial({
+                    specular: new THREE.Color("white"),
+                    shininess: 0.1,
+                    color: new THREE.Color("white"),
+                    side: THREE.DoubleSide,
+                    map: loader.load("static/crateBuiding.png", render),
+                }),
+                stairBuilding: {
+                    stairBuildingTop: new THREE.MeshPhongMaterial({
+                        specular: new THREE.Color("white"),
+                        shininess: 0.1,
+                        color: new THREE.Color("white"),
+                        side: THREE.DoubleSide,
+                        map: loader.load("static/stairBuildingTop.png", render),
+                    }),
+                    stairBuildingBase: new THREE.MeshPhongMaterial({
+                        specular: new THREE.Color("white"),
+                        shininess: 0.1,
+                        color: new THREE.Color("white"),
+                        side: THREE.DoubleSide,
+                        map: loader.load(
+                            "static/stairBuildingBase.png",
+                            render
+                        ),
+                    }),
+                },
+                orangeSun: new THREE.MeshPhongMaterial({
+                    color: 0xff6600,
+                    transparent: true,
+                    opacity: 0.5,
+                    depthWrite: false,
+                }),
+                yellowSun: new THREE.MeshLambertMaterial({
+                    color: 0xffff00,
+                    transparent: true,
+                    opacity: 0.5,
+                    depthWrite: false,
+                }),
+                bezierCurveMaterial: new THREE.LineBasicMaterial({
+                    color: 0xffffff,
+                    linewidth: 2,
+                }),
+            };
+
+            const buildingParams = {
+                basePlateWidth: 800,
+
+                centralBuildingTopRadius: 20,
+                centralBuildingBottomLength: 40,
+
+                siloBuildingRadius: 10,
+                siloBuildingHeight: 20,
+
+                crateBuildingWidth: 20,
+                crateBuildingHeight: 20,
+                crateBuildingLength: 40,
+
+                stairBuildingBaseWidth: 40,
+                stairBuildingBaseHeight: 20,
+                stairBuildingTopLength: 20,
+                stairBuildingTopHeight: 10,
+
+                orangeSunRadius: 100,
+                orangeSunX: 0,
+                orangeSunY: 1500,
+                orangeSunZ: 0,
+                orangeSunRotationAxis: new THREE.Vector3(1, 0, 1),
+                orangeSunSpeed: 0.002,
+
+                yellowSunRadius: 200,
+                yellowSunX: 0,
+                yellowSunY: 1100,
+                yellowSunZ: 0,
+                yellowSunRotationAxis: new THREE.Vector3(-1, 0, 1),
+                yellowSunSpeed: 0.001,
+            };
 
             var sceneMaterials = [
                 // 0. Material for Tatooine's desert floor.
@@ -87,28 +251,25 @@
                 new THREE.MeshPhongMaterial({
                     color: new THREE.Color("darkgrey"), // color
                     side: THREE.FrontSide, // sides: show outside surface
+                    map: loader.load("./static/deathStar.png", render),
                 }),
                 // 2. Material for the concave sphere / cannon of the Death Star
                 new THREE.MeshPhongMaterial({
                     color: new THREE.Color("grey"),
-                    side: THREE.DoubleSide,
+                    side: THREE.BackSide,
                 }),
                 // 3. Phong material used for the 8-laser base of the Death Star:
                 new THREE.MeshPhongMaterial({
-                    color: new THREE.Color("lightgreen"),
+                    color: new THREE.Color(laserParams.laserColor),
                     side: THREE.DoubleSide,
-                    emissive: new THREE.Color("green"),
-                    emissiveIntensity: 128,
                     transparent: true,
                     opacity: 0.5,
                     wireframe: true,
                 }),
                 // 4. Phong material used for the main laserbeam of the Death Star:
                 new THREE.MeshPhongMaterial({
-                    color: new THREE.Color("lightgreen"),
+                    color: new THREE.Color(laserParams.laserColor),
                     side: THREE.DoubleSide,
-                    emissive: new THREE.Color("green"),
-                    emissiveIntensity: 255.0,
                     transparent: true,
                     opacity: 0.75,
                 }),
@@ -118,8 +279,6 @@
                     side: THREE.DoubleSide,
                     emissive: new THREE.Color("lightyellow"),
                     emissiveIntensity: 0.5,
-                    //transparent: true,
-                    //opacity: 0.75,
                 }),
                 // 6. Phong material used for the shockwave of a explosion:
                 new THREE.MeshPhongMaterial({
@@ -127,8 +286,11 @@
                     side: THREE.DoubleSide,
                     emissive: new THREE.Color("yellow"),
                     emissiveIntensity: 0.5,
-                    //transparent: true,
-                    //opacity: 0.75,
+                }),
+                // 7. Material used for the band / ring of the Death Star.
+                new THREE.MeshPhongMaterial({
+                    color: new THREE.Color("grey"),
+                    side: THREE.FrontSide,
                 }),
             ];
 
@@ -136,26 +298,6 @@
             // Add functions:
             // ----------------------------------------------------------------
             // Object functions ( lights, meshes, etc. ):
-
-            /**
-             * MakePlain() creates a template plane geometry, which acts as the
-             * desert floor of our scene.
-             */
-            function makePlain() {
-                var params = plainParams;
-
-                var plainGeom = new THREE.PlaneGeometry(
-                    params.width,
-                    params.height,
-                    params.wSegments,
-                    params.hSegments
-                );
-                var plainMesh = new THREE.Mesh(plainGeom, sceneMaterials[0]);
-                // Adjust plain as needed:
-                plainMesh.rotation.set(Math.PI / 2, 0, 0);
-                // Return the completed plain:
-                return plainMesh;
-            }
 
             /**
              * function makeDeathStar() creates the death star, by generating
@@ -199,12 +341,12 @@
                 var ringGeometry = new THREE.CylinderGeometry(
                     params.hullRadius, // radiusTop
                     params.hullRadius, // radiusBottom
-                    0.25, // height
+                    10, // height
                     64, // radialSegments
                     1, // heightSegments
                     true // open-ended
                 );
-                var ringMesh = new THREE.Mesh(ringGeometry, sceneMaterials[2]);
+                var ringMesh = new THREE.Mesh(ringGeometry, sceneMaterials[7]);
                 ringMesh.rotation.set(Math.PI / 7, 0, 0);
 
                 // combine meshes into the death star:
@@ -252,14 +394,22 @@
                     sceneMaterials[3]
                 );
                 laserBaseMesh.position.set(0, params.laserMergeHeight / 2, 0);
+                laserBaseMesh.visible = laserParams.laserMergeVisible;
                 laser.add(laserBaseMesh);
 
-                // Add illumination to the merging lasers.
-                var baseLight = makePointLight("green");
+                // Add point illumination to the merging lasers.
+                var baseLight = makePointLight(
+                    buildingParams.laserColor, // color
+                    0.5, // intensity
+                    10, // distance
+                    2 // decay
+                );
                 baseLight.position.set(0, params.laserMergeHeight, 0);
                 laser.add(baseLight);
+                // toggle point light visibility:
+                baseLight.visible = params.laserMergeVisible;
 
-                // Add conjoining point of all 8 lasers:
+                // Add conjoining point of all 8 lasers ( beam base ):
                 var beamBaseGeom = new THREE.SphereGeometry(
                     params.beamBaseRadius,
                     16
@@ -270,6 +420,8 @@
                 );
                 beamBaseMesh.position.set(0, params.laserMergeHeight, 0);
                 laser.add(beamBaseMesh);
+                // Toggle beam base visibility:
+                beamBaseMesh.visible = params.laserMergeVisible;
 
                 // Add the main laserbeam cylander:
                 var mainLaserGeom = new THREE.CylinderGeometry(
@@ -287,12 +439,15 @@
                     params.beamHeight / 2 + params.laserMergeHeight,
                     0
                 );
+                mainLaserMesh.visible = laserParams.beamVisible; // controls laser visibility.
                 laser.add(mainLaserMesh);
 
                 // Add illumination to the main laserbeam:
                 var laserLight = makeLaserLight();
                 laserLight.position.set(0, params.laserMergeHeight, 0);
                 laser.add(laserLight);
+                // Toggle laserbeam visibility:
+                laserLight.visible = params.beamVisible;
 
                 return laser;
             }
@@ -318,7 +473,7 @@
                 // Add the shockwave to the explosion:
                 var waveGeom = new THREE.RingGeometry(
                     params.coreRadius, // inner radius
-                    params.coreRadius * (params.coreRadius / 5), // outer radius
+                    Math.pow(params.coreRadius, 2) / 25,
                     32, // theta segments ( roundness )
                     1 // phi segemnts
                 );
@@ -328,9 +483,12 @@
                 explosion.add(waveMesh);
 
                 // Add illumination to the explosion:
-                var pointLight = makePointLight("lightyellow");
+                var pointLight = makePointLight(laserParams.laserColor);
                 pointLight.position.set(0, 0.5, 0);
                 explosion.add(pointLight);
+
+                // Check explosion visibility:
+                explosion.visible = explosionParams.visible;
 
                 // Return the completed explosion:
                 return explosion;
@@ -362,8 +520,8 @@
              */
             function makeLaserLight() {
                 var laserLight = new THREE.DirectionalLight(
-                    new THREE.Color("green"), // color
-                    1 // intensity
+                    new THREE.Color(laserParams.laserColor), // color
+                    0.5 // intensity
                 );
                 // Since the light's target is automatically the origin, no target is needed.
                 return laserLight;
@@ -378,9 +536,27 @@
              * This will be used for animation purposes.
              */
             function updateDeathStar() {
+                scene.remove(deathStar);
                 var params = deathStarParams;
+                scene.remove(deathStar);
+                deathStar = makeDeathStar(); // Re-generate the Death Star
+                // Adjust length of the laser.
+                laserParams.beamHeight =
+                    Math.abs(deathStarParams.X) + Math.abs(deathStarParams.Z);
+                // Adjust Death Star laser.
                 deathStar.position.set(params.X, params.Y, params.Z);
                 deathStar.lookAt(0, 0, 0); // Lock Death Star to face origin point.
+
+                scene.add(deathStar);
+                render();
+            }
+
+            function updateExplosion() {
+                var params = explosionParams;
+                scene.remove(explosion);
+                explosion = makeExplosion();
+                scene.add(explosion);
+                render();
             }
 
             // ================================================================
@@ -391,33 +567,27 @@
 
             // ----------------------------------------------------------------
             // Add renderer:
-            var renderer = new THREE.WebGLRenderer();
+            var renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
             // ----------------------------------------------------------------
             // Add canvas:
             var canvas = renderer.domElement;
             var parent = document.body.appendChild(canvas);
             renderer.setSize(canvas.clientWidth, canvas.clientHeight);
-            renderer.setClearColor(new THREE.Color(0x2f2f2f), 1);
+            renderer.setClearColor(new THREE.Color("salmon"), 1);
 
             // ----------------------------------------------------------------
             // Add camera:
             var camera = setupCamera(cameraParams);
             scene.add(camera);
 
-            var enableOrbitControls = true; // !!! IMPORTANT !!!
-
-            var cameraControls = new THREE.OrbitControls(camera, canvas);
-            if (enableOrbitControls == true) {
-                //only configure if we enable it
-                //set up camera controls so we can use mouse to pan around scene
-                setupCameraControls(cameraControls);
-            }
             // ----------------------------------------------------------------
             // Add objects:
             let ambLight = new THREE.AmbientLight(
                 new THREE.Color("white"),
-                0.75
+                0.5
             );
 
             scene.add(ambLight);
@@ -428,120 +598,115 @@
             updateDeathStar();
 
             var explosion = makeExplosion();
-            // scene.add(explosion);
-
-            let loader = new THREE.TextureLoader();
-
-            const groundSceneMaterials = {
-                basePlate: new THREE.MeshPhongMaterial({
-                    specular: new THREE.Color("white"),
-                    shininess: 0,
-                    color: new THREE.Color("tan"),
-                    side: THREE.DoubleSide,
-                    map: loader.load("static/desert.png", render),
-                }),
-                centralBuilding: {
-                    centralBuildingTop: new THREE.MeshPhongMaterial({
-                        specular: new THREE.Color("white"),
-                        shininess: 0,
-                        color: new THREE.Color("white"),
-                        side: THREE.DoubleSide,
-                        map: loader.load(
-                            "static/centralBuildingTop.png",
-                            render
-                        ),
-                    }),
-                    centralBuildingBase: new THREE.MeshPhongMaterial({
-                        specular: new THREE.Color("white"),
-                        shininess: 0,
-                        color: new THREE.Color("white"),
-                        side: THREE.DoubleSide,
-                        map: loader.load(
-                            "static/centralBuildingBase.png",
-                            render
-                        ),
-                    }),
-                },
-                siloBuilding: {
-                    siloBuildingTop: new THREE.MeshPhongMaterial({
-                        specular: new THREE.Color("white"),
-                        shininess: 0,
-                        color: new THREE.Color("white"),
-                        side: THREE.DoubleSide,
-                        map: loader.load("static/siloBuildingTop.png", render),
-                    }),
-                    siloBuildingBaseTopBottom: new THREE.MeshPhongMaterial({
-                        specular: new THREE.Color("white"),
-                        shininess: 0,
-                        color: new THREE.Color("white"),
-                        side: THREE.DoubleSide,
-                        map: loader.load(
-                            "static/siloBuildingBaseTopBottom.png",
-                            render
-                        ),
-                    }),
-                    siloBuildingBaseWall: new THREE.MeshPhongMaterial({
-                        specular: new THREE.Color("white"),
-                        shininess: 0,
-                        color: new THREE.Color("white"),
-                        side: THREE.DoubleSide,
-                        map: loader.load(
-                            "static/siloBuildingBaseWall.png",
-                            render
-                        ),
-                    }),
-                },
-                crateBuilding: new THREE.MeshPhongMaterial({
-                    specular: new THREE.Color("white"),
-                    shininess: 0,
-                    color: new THREE.Color("white"),
-                    side: THREE.DoubleSide,
-                    map: loader.load("static/crateBuiding.png", render),
-                }),
-                stairBuilding: {
-                    stairBuildingTop: new THREE.MeshPhongMaterial({
-                        specular: new THREE.Color("white"),
-                        shininess: 0,
-                        color: new THREE.Color("white"),
-                        side: THREE.DoubleSide,
-                        map: loader.load("static/stairBuildingTop.png", render),
-                    }),
-                    stairBuildingBase: new THREE.MeshPhongMaterial({
-                        specular: new THREE.Color("white"),
-                        shininess: 0,
-                        color: new THREE.Color("white"),
-                        side: THREE.DoubleSide,
-                        map: loader.load(
-                            "static/stairBuildingBase.png",
-                            render
-                        ),
-                    }),
-                },
-            };
-
-            const buildingParams = {
-                basePlateWidth: 200,
-
-                centralBuildingTopRadius: 20,
-                centralBuildingBottomLength: 40,
-
-                siloBuildingRadius: 10,
-                siloBuildingHeight: 20,
-
-                crateBuildingWidth: 20,
-                crateBuildingHeight: 20,
-                crateBuildingLength: 40,
-
-                stairBuildingBaseWidth: 40,
-                stairBuildingBaseHeight: 20,
-                stairBuildingTopLength: 20,
-                stairBuildingTopHeight: 10,
-            };
+            scene.add(explosion);
 
             scene.add(createGroundScene(buildingParams, groundSceneMaterials));
+            let orangeSun = createSun(
+                buildingParams.orangeSunRadius,
+                buildingParams.orangeSunX,
+                buildingParams.orangeSunY,
+                buildingParams.orangeSunZ,
+                groundSceneMaterials.orangeSun
+            );
+            scene.add(orangeSun);
+            let yellowSun = createSun(
+                buildingParams.yellowSunRadius,
+                buildingParams.yellowSunX,
+                buildingParams.yellowSunY,
+                buildingParams.yellowSunZ,
+                groundSceneMaterials.yellowSun
+            );
+            scene.add(yellowSun);
 
             // Render the complete scene.
             render();
+
+            // Animate the scene:
+            function animate() {
+                requestAnimationFrame(animate);
+
+                rotateAroundOrigin(
+                    orangeSun,
+                    buildingParams.orangeSunRotationAxis,
+                    buildingParams.orangeSunSpeed
+                );
+
+                rotateAroundOrigin(
+                    yellowSun,
+                    buildingParams.yellowSunRotationAxis,
+                    buildingParams.yellowSunSpeed
+                );
+
+                fireLaser();
+
+                render();
+            }
+
+            // Add parameters for firing the Death Star laser:
+
+            var laserChargeTime = 100;
+            var laserFireTime = 50;
+            var explosionTime = 200;
+
+            // Add functions for firing the Death Star laser:
+
+            function fireLaser() {
+                // check if the laserbeam is firing.
+                if (deathStarParams.isAnimated == true) {
+                    // Charge the laserbeam! Render the laser base / conjoining lasers:
+                    laserParams.laserMergeVisible = true; // render laser base.
+
+                    if (laserChargeTime > 0) {
+                        // wait.
+                        laserChargeTime -= 1;
+                        updateDeathStar();
+                        return;
+                    } else {
+                        // When the laser finishes charging. We need to fire the meain beam:
+                        // First, enable main laser visibility:
+                        laserParams.beamVisible = true; // render the main laser.
+                        // Give the laser a set amount of time to fire for:
+                        if (laserFireTime > 0) {
+                            laserFireTime -= 1;
+                            updateDeathStar();
+                            return;
+                        }
+                    }
+                    // Watch the firewors! Render the explosion and exponentially increase it's radius:
+                    if (laserFireTime <= 0) {
+                        explosionParams.visible = true;
+                        if (explosionTime > 0) {
+                            explosionTime -= 1;
+                            if (explosionParams.coreRadius <= 100) {
+                                explosionParams.coreRadius = Math.pow(
+                                    explosionParams.coreRadius,
+                                    1.005
+                                );
+                            }
+                            updateExplosion();
+                            return;
+                        }
+                    }
+                    // Reset animation:
+                    resetLaserBeam();
+                    console.log("Firing sequence complete");
+                }
+            }
+
+            function resetLaserBeam() {
+                deathStarParams.isAnimated = false;
+                laserParams.laserMergeVisible = false; // Hide laser base.
+                laserParams.beamVisible = false; // Hide the main laser.
+                explosionParams.visible = false;
+                explosionParams.coreRadius = 16;
+                laserChargeTime = 100;
+                laserFireTime = 50;
+                explosionTime = 200;
+                updateDeathStar();
+                updateExplosion();
+            }
+
+            animate();
 
             // ================================================================
             // Add camera controls:
@@ -549,34 +714,65 @@
             document.addEventListener("keypress", (event) => {
                 const key = event.key;
                 switch (key) {
-                    case "1": // Origin, looking towards the Death Star.
-                        // change camera position:
-                        cameraParams.eyeX = (deathStarParams.X / 2) * -1;
-                        cameraParams.eyeY = 3;
-                        cameraParams.eyeZ = (deathStarParams.Z / 2) * -1;
-                        // change camera target:
-                        cameraParams.atX = deathStarParams.X;
-                        cameraParams.atY = deathStarParams.Y / 2;
-                        cameraParams.atZ = deathStarParams.Z;
+                    case "0": // Default camera position. Obit controls enabled?
+                        cameraParams.viewPoint = 0;
                         updateCamera();
+                        console.log("Camera angle changed to viewpoint 0");
+                        break;
+                    case "1": // Origin, looking towards the Death Star.
+                        cameraParams.viewPoint = 1;
+                        updateCamera();
+                        console.log("Camera angle changed to viewpoint 1");
                         break;
                     case "2": // The bridge of the Death Star, looking at Tatooine
-                        // change camera position:
-                        cameraParams.eyeX = deathStarParams.X;
-                        cameraParams.eyeY =
-                            deathStarParams.Y + deathStarParams.hullRadius;
-                        cameraParams.eyeZ = deathStarParams.Z;
-                        // change camera target:
-                        cameraParams.atX = 0;
-                        cameraParams.atY = 0;
-                        cameraParams.atZ = 0;
+                        cameraParams.viewPoint = 2;
                         updateCamera();
+                        console.log("Camera angle changed to viewpoint 2");
+                        break;
+                    // Add in movement controls for the Death Star:
+                    case "w": // Move the Death Star forward.
+                        deathStarParams.Z += 10;
+                        updateDeathStar();
+                        updateCamera();
+                        break;
+                    case "a": // Move the Death Star left.
+                        deathStarParams.X -= 10;
+                        updateDeathStar();
+                        updateCamera();
+                        break;
+                    case "s": // Move the Death Star backwards.
+                        deathStarParams.Z -= 10;
+                        updateDeathStar();
+                        updateCamera();
+                        break;
+                    case "d": // Move the Death Star right.
+                        deathStarParams.X += 10;
+                        updateDeathStar();
+                        updateCamera();
+                        break;
+                    case "f": // Fire the Death Star laser:
+                        deathStarParams.isAnimated = true;
+                        //updateDeathStar();
+                        break;
+                    case "r": // Reset the laser beam:
+                        resetLaserBeam();
                         break;
                 }
             });
 
             // ================================================================
             // Add GUI:
+
+            let gui = new dat.GUI();
+
+            gui.add(
+                laserParams,
+                "laserColor",
+                laserParams.laserColorOptions
+            ).onChange(function (value) {
+                sceneMaterials[3].color.set(value);
+                sceneMaterials[4].color.set(value);
+            });
         </script>
     </body>
 </html>

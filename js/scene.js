@@ -6,6 +6,7 @@ function createGroundScene(params, materials) {
         params.basePlateWidth
     );
     let basePlateMesh = new THREE.Mesh(basePlateGeom, materials.basePlate);
+    basePlateMesh.receiveShadow = true;
     basePlateMesh.rotateX(Math.PI / 2);
     groundScene.add(basePlateMesh);
 
@@ -65,6 +66,8 @@ function createCentralBuilding(params, materials) {
         centralBuildingTopGeom,
         materials.centralBuildingTop
     );
+    centralBuildingTopMesh.receiveShadow = true;
+    centralBuildingTopMesh.castShadow = true;
     centralBuildingTopMesh.position.set(0, params.centralBuildingTopRadius, 0);
 
     let centralBuildingBottomGeom = new THREE.BoxGeometry(
@@ -96,6 +99,8 @@ function createCentralBuilding(params, materials) {
         centralBuildingBottomGeom,
         materials.centralBuildingBase
     );
+    centralBuildingBottomMesh.receiveShadow = true;
+    centralBuildingBottomMesh.castShadow = true;
     centralBuildingBottomMesh.position.set(
         0,
         params.centralBuildingBottomLength / 4,
@@ -126,6 +131,9 @@ function createSiloBuilding(params, materials) {
     );
 
     let siloTopMesh = new THREE.Mesh(siloTopGeom, materials.siloBuildingTop);
+    siloTopMesh.receiveShadow = true;
+    siloTopMesh.castShadow = true;
+
     siloTopMesh.position.set(
         0,
         params.siloBuildingHeight - params.siloBuildingRadius,
@@ -137,6 +145,8 @@ function createSiloBuilding(params, materials) {
         materials.siloBuildingBaseTopBottom,
     ];
     let siloBottomMesh = new THREE.Mesh(siloBottomGeom, siloBottomMaterial);
+    siloBottomMesh.receiveShadow = true;
+    siloBottomMesh.castShadow = true;
 
     siloBuildingObject.add(siloTopMesh);
     siloBuildingObject.add(siloBottomMesh);
@@ -170,6 +180,8 @@ function createCrateBuilding(params, material) {
         addFaceCoordinates(3 / 4, 1 / 2, 1, 1 / 2, 1, 3 / 4), // 364
     ];
     let crateBuildingMesh = new THREE.Mesh(crateBuildingGeom, material);
+    crateBuildingMesh.receiveShadow = true;
+    crateBuildingMesh.castShadow = true;
     return crateBuildingMesh;
 }
 
@@ -205,6 +217,9 @@ function createStairBuilding(params, materials) {
         materials.stairBuildingBase
     );
     stairBuildingBaseMesh.rotateY(Math.PI / 2);
+    stairBuildingBaseMesh.receiveShadow = true;
+    stairBuildingBaseMesh.castShadow = true;
+
     stairBuildingObject.add(stairBuildingBaseMesh);
 
     let stairBuildingTopGeom = new THREE.BoxGeometry(
@@ -237,6 +252,9 @@ function createStairBuilding(params, materials) {
         materials.stairBuildingTop
     );
 
+    stairBuildingTopMesh.receiveShadow = true;
+    stairBuildingTopMesh.castShadow = true;
+
     stairBuildingTopMesh.position.set(
         0,
         (params.stairBuildingBaseHeight + params.stairBuildingTopHeight) / 2,
@@ -245,4 +263,30 @@ function createStairBuilding(params, materials) {
     stairBuildingTopMesh.rotateY(Math.PI / 2);
     stairBuildingObject.add(stairBuildingTopMesh);
     return stairBuildingObject;
+}
+
+function createSun(radius, xpos, ypos, zpos, material) {
+    let sunObject = new THREE.Object3D();
+    let sunGeom = new THREE.SphereGeometry(radius, 32, 32);
+    let sunMesh = new THREE.Mesh(sunGeom, material);
+    sunMesh.position.set(xpos, ypos, zpos);
+    let sunLight = new THREE.DirectionalLight(material.color, 0.25);
+    sunLight.position.set(xpos, ypos, zpos);
+    sunLight.target.position.set(0, 0, 0);
+    sunLight.castShadow = true;
+
+    sunLight.shadow.camera.left = -100;
+    sunLight.shadow.camera.right = 100;
+    sunLight.shadow.camera.top = 100;
+    sunLight.shadow.camera.bottom = -100;
+
+    sunLight.shadow.mapSize.width = 2048;
+    sunLight.shadow.mapSize.height = 2048;
+    sunLight.shadow.camera.near = 0.1;
+    sunLight.shadow.camera.far = 1200;
+
+    sunObject.add(sunMesh);
+    sunObject.add(sunLight);
+    sunObject.add(sunLight.target);
+    return sunObject;
 }
