@@ -16,19 +16,21 @@
     </head>
 
     <body>
-        <h1>Project Scene</h1>
-        <h2>
-            Controls:
-            <p><kbd>w</kbd>: move death star</p>
-            <p><kbd>a</kbd>: move death star</p>
-            <p><kbd>s</kbd>: move death star</p>
-            <p><kbd>d</kbd>: move death star</p>
-            <p><kbd>f</kbd>: fire laser from death star</p>
-            <p><kbd>1</kbd>: switch to camera view 1</p>
-            <p><kbd>2</kbd>: switch to camera view 2</p>
-            <p><kbd>0</kbd>(default): switch to camera view 0</p>
-            <p><kbd>r</kbd>: reset scene</p>
-        </h2>
+        <div>
+            <h1>Project Scene</h1>
+            <h2>
+                Controls:
+                <p><kbd>w</kbd>: move death star</p>
+                <p><kbd>a</kbd>: move death star</p>
+                <p><kbd>s</kbd>: move death star</p>
+                <p><kbd>d</kbd>: move death star</p>
+                <p><kbd>f</kbd>: fire laser from death star</p>
+                <p><kbd>1</kbd>: switch to camera view 1</p>
+                <p><kbd>2</kbd>: switch to camera view 2</p>
+                <p><kbd>0</kbd>(default): switch to camera view 0</p>
+                <p><kbd>r</kbd>: reset scene</p>
+            </h2>
+        </div>
         <script>
             // ================================================================
             // Add Global Parameters:
@@ -585,7 +587,7 @@
             // Add objects:
             let ambLight = new THREE.AmbientLight(
                 new THREE.Color("white"),
-                0.75
+                0.5
             );
 
             scene.add(ambLight);
@@ -709,17 +711,6 @@
             // ================================================================
             // Add camera controls:
 
-            let gui = new dat.GUI();
-
-            gui.add(
-                laserParams,
-                "laserColor",
-                laserParams.laserColorOptions
-            ).onChange(function (value) {
-                sceneMaterials[3].color.set(value);
-                sceneMaterials[4].color.set(value);
-            });
-
             document.addEventListener("keypress", (event) => {
                 const key = event.key;
                 switch (key) {
@@ -771,6 +762,17 @@
 
             // ================================================================
             // Add GUI:
+
+            let gui = new dat.GUI();
+
+            gui.add(
+                laserParams,
+                "laserColor",
+                laserParams.laserColorOptions
+            ).onChange(function (value) {
+                sceneMaterials[3].color.set(value);
+                sceneMaterials[4].color.set(value);
+            });
         </script>
     </body>
 </html>
