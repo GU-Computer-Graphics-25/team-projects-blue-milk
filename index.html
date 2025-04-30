@@ -18,9 +18,16 @@
     <body>
         <h1>Project Scene</h1>
         <h2>
-            Use the 'w, a, s, and d' keys to pilot the death star, and the f key
-            to fire it's laser! The camera angle can be changed with the 0, 1,
-            and 2 keys
+            Controls:
+            <p><kbd>w</kbd>: move death star</p>
+            <p><kbd>a</kbd>: move death star</p>
+            <p><kbd>s</kbd>: move death star</p>
+            <p><kbd>d</kbd>: move death star</p>
+            <p><kbd>f</kbd>: fire laser from death star</p>
+            <p><kbd>1</kbd>: switch to camera view 1</p>
+            <p><kbd>2</kbd>: switch to camera view 2</p>
+            <p><kbd>0</kbd>(default): switch to camera view 0</p>
+            <p><kbd>r</kbd>: reset scene</p>
         </h2>
         <script>
             // ================================================================
@@ -37,9 +44,7 @@
                 hullHSegments: 32,
                 hullThetaStart: 0.3,
                 // ----- cannon: ------------------
-                //cannonThetaStart: -0.3,
                 cannonThetaLength: -0.3, // Inverse of the theta start on the hull.
-                //cannonThetaLength: -Math.PI * 4,
                 isAnimated: false,
             };
             var laserParams = {
@@ -198,7 +203,6 @@
                 bezierCurveMaterial: new THREE.LineBasicMaterial({
                     color: 0xffffff,
                     linewidth: 2,
-                    // visible: false,
                 }),
             };
 
@@ -273,8 +277,6 @@
                     side: THREE.DoubleSide,
                     emissive: new THREE.Color("lightyellow"),
                     emissiveIntensity: 0.5,
-                    //transparent: true,
-                    //opacity: 0.75,
                 }),
                 // 6. Phong material used for the shockwave of a explosion:
                 new THREE.MeshPhongMaterial({
@@ -282,8 +284,6 @@
                     side: THREE.DoubleSide,
                     emissive: new THREE.Color("yellow"),
                     emissiveIntensity: 0.5,
-                    //transparent: true,
-                    //opacity: 0.75,
                 }),
                 // 7. Material used for the band / ring of the Death Star.
                 new THREE.MeshPhongMaterial({
@@ -581,14 +581,6 @@
             var camera = setupCamera(cameraParams);
             scene.add(camera);
 
-            var enableOrbitControls = false; // !!! IMPORTANT !!!
-
-            var cameraControls = new THREE.OrbitControls(camera, canvas);
-            if (enableOrbitControls == true) {
-                //only configure if we enable it
-                //set up camera controls so we can use mouse to pan around scene
-                setupCameraControls(cameraControls);
-            }
             // ----------------------------------------------------------------
             // Add objects:
             let ambLight = new THREE.AmbientLight(
@@ -604,7 +596,6 @@
             updateDeathStar();
 
             var explosion = makeExplosion();
-            // scene.add(explosion);
             scene.add(explosion);
 
             scene.add(createGroundScene(buildingParams, groundSceneMaterials));
