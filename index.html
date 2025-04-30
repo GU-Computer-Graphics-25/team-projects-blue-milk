@@ -95,7 +95,7 @@
                 // 2. Material for the concave sphere / cannon of the Death Star
                 new THREE.MeshPhongMaterial({
                     color: new THREE.Color("grey"),
-                    side: THREE.DoubleSide,
+                    side: THREE.BackSide,
                 }),
                 // 3. Phong material used for the 8-laser base of the Death Star:
                 new THREE.MeshPhongMaterial({
@@ -133,6 +133,11 @@
                     emissiveIntensity: 0.5,
                     //transparent: true,
                     //opacity: 0.75,
+                }),
+                // 7. Material used for the band / ring of the Death Star.
+                new THREE.MeshPhongMaterial({
+                    color: new THREE.Color("grey"),
+                    side: THREE.FrontSide,
                 }),
             ];
 
@@ -208,7 +213,7 @@
                     1, // heightSegments
                     true // open-ended
                 );
-                var ringMesh = new THREE.Mesh(ringGeometry, sceneMaterials[2]);
+                var ringMesh = new THREE.Mesh(ringGeometry, sceneMaterials[7]);
                 ringMesh.rotation.set(Math.PI / 7, 0, 0);
 
                 // combine meshes into the death star:
