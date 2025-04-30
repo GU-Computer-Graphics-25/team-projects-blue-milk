@@ -38,21 +38,21 @@
             };
             var laserParams = {
                 // cone base ( 8 merged lasers ):
-                laserMergeRadius: 2,
-                laserMergeHeight: 4,
+                laserMergeRadius: 5,
+                laserMergeHeight: 40,
                 laserMergeRSegs: 8, // Radial segments
                 laserMergeOpenEnded: true,
                 laserMergeVisible: false,
                 // ----- laserBeam base: ----------
-                beamBaseRadius: 0.5,
+                beamBaseRadius: 5,
                 // ----- laserbeam proper: --------
-                beamRadius: 0.25,
+                beamRadius: 1,
                 beamHeight:
                     Math.abs(deathStarParams.X) + Math.abs(deathStarParams.Z),
                 beamVisible: false,
             };
             var explosionParams = {
-                coreRadius: 8,
+                coreRadius: 16,
                 coreSegments: 32, // width segments
                 visible: false,
             };
@@ -410,16 +410,16 @@
                 laser.add(baseLight);
 
                 // Add conjoining point of all 8 lasers:
-                var beamBaseGeom = new THREE.SphereGeometry(
-                    params.beamBaseRadius,
-                    16
-                );
-                var beamBaseMesh = new THREE.Mesh(
-                    beamBaseGeom,
-                    sceneMaterials[4]
-                );
-                beamBaseMesh.position.set(0, params.laserMergeHeight, 0);
-                laser.add(beamBaseMesh);
+                // var beamBaseGeom = new THREE.SphereGeometry(
+                //     params.beamBaseRadius,
+                //     16
+                // );
+                // var beamBaseMesh = new THREE.Mesh(
+                //     beamBaseGeom,
+                //     sceneMaterials[4]
+                // );
+                // beamBaseMesh.position.set(0, params.laserMergeHeight, 0);
+                // laser.add(beamBaseMesh);
 
                 // Add a tracking point to the beam base, which will set where
                 // the user's camera will be positioned at for camera angle 2:
