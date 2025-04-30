@@ -104,8 +104,8 @@
                 new THREE.MeshPhongMaterial({
                     color: new THREE.Color("lightgreen"),
                     side: THREE.DoubleSide,
-                    emissive: new THREE.Color("green"),
-                    emissiveIntensity: 128,
+                    //emissive: new THREE.Color("green"),
+                    //emissiveIntensity: 128,
                     transparent: true,
                     opacity: 0.5,
                     wireframe: true,
@@ -114,8 +114,8 @@
                 new THREE.MeshPhongMaterial({
                     color: new THREE.Color("lightgreen"),
                     side: THREE.DoubleSide,
-                    emissive: new THREE.Color("green"),
-                    emissiveIntensity: 255.0,
+                    //emissive: new THREE.Color("green"),
+                    //emissiveIntensity: 255.0,
                     transparent: true,
                     opacity: 0.75,
                 }),
@@ -404,15 +404,22 @@
                 laserBaseMesh.visible = laserParams.laserMergeVisible;
                 laser.add(laserBaseMesh);
 
-                // Add illumination to the merging lasers.
-                var baseLight = makePointLight("green");
+                // Add point illumination to the merging lasers.
+                var baseLight = makePointLight(
+                    "green", // color
+                    0.5, // intensity
+                    10, // distance
+                    2, // decay
+                );
                 baseLight.position.set(0, params.laserMergeHeight, 0);
                 laser.add(baseLight);
+                // toggle point light visibility:
+                baseLight.visible = params.laserMergeVisible;
 
-                // Add conjoining point of all 8 lasers:
+                // Add conjoining point of all 8 lasers ( beam base ):
                 var beamBaseGeom = new THREE.SphereGeometry(
                     params.beamBaseRadius,
-                    16
+                    16,
                 );
                 var beamBaseMesh = new THREE.Mesh(
                     beamBaseGeom,
@@ -420,31 +427,8 @@
                 );
                 beamBaseMesh.position.set(0, params.laserMergeHeight, 0);
                 laser.add(beamBaseMesh);
-
-                // Add a tracking point to the beam base, which will set where
-                // the user's camera will be positioned at for camera angle 2:
-
-                //let cam2Position = new THREE.Vector3();
-
-                /*
-                beamBaseGeom.centroid = new THREE.Vector3();
-
-                for ( var i = 0, l = beamBaseGeom.vertices.lengt; i < l; i++ ) {
-                    beamBaseGeom.centroid.add( beamBaseGeom.vertices[i] );
-                }
-                beamBaseGeom.centroid.divideScalar( beamBaseGeom.vertices.length );
-                console.log( "The beam-base position is " + beamBaseGeom.centroid );
-
-                cameraLaserAngle = beamBaseGeom.centroid;
-                console.log( cameraLaserAngle.x );
-                */
-
-                /*
-                var beamBasePosition = new THREE.Vector3( 0, params.laserMergeHeight, 0 );
-                laser.add( beamBasePosition );
-
-                console.log( " the beam base is at X: " + beamBasePosition.getComponent( 1 ) );
-                */
+                // Toggle beam base visibility:
+                beamBaseMesh.visible = params.laserMergeVisible;
 
                 // Add the main laserbeam cylander:
                 var mainLaserGeom = new THREE.CylinderGeometry(
@@ -469,6 +453,8 @@
                 var laserLight = makeLaserLight();
                 laserLight.position.set(0, params.laserMergeHeight, 0);
                 laser.add(laserLight);
+                // Toggle laserbeam visibility:
+                laserLight.visible = params.beamVisible;
 
                 return laser;
             }
@@ -558,13 +544,12 @@
              */
             function updateDeathStar() {
                 scene.remove(deathStar);
-
                 var params = deathStarParams;
-
                 scene.remove(deathStar);
-
                 deathStar = makeDeathStar(); // Re-generate the Death Star
-
+                // Adjust length of the laser.
+                laserParams.beamHeight = Math.abs(deathStarParams.X) + Math.abs(deathStarParams.Z);
+                // Adjust Death Star laser.
                 deathStar.position.set(params.X, params.Y, params.Z);
                 deathStar.lookAt(0, 0, 0); // Lock Death Star to face origin point.
 
