@@ -17,6 +17,11 @@
 
     <body>
         <h1>Project Scene</h1>
+        <h2>
+            Use the 'w, a, s, and d' keys to pilot the death star, and the f key
+            to fire it's laser! The camera angle can be changed with the 0, 1,
+            and 2 keys
+        </h2>
         <script>
             // ================================================================
             // Add Global Parameters:
@@ -68,7 +73,7 @@
             };
             var pointLightParams = {
                 intensity: 1,
-                distance: 0,
+                distance: 1,
                 decay: 2,
             };
             let cameraParams = {
@@ -217,14 +222,14 @@
 
                 orangeSunRadius: 100,
                 orangeSunX: 0,
-                orangeSunY: 1000,
+                orangeSunY: 1500,
                 orangeSunZ: 0,
                 orangeSunRotationAxis: new THREE.Vector3(1, 0, 1),
                 orangeSunSpeed: 0.002,
 
                 yellowSunRadius: 200,
                 yellowSunX: 0,
-                yellowSunY: 600,
+                yellowSunY: 1100,
                 yellowSunZ: 0,
                 yellowSunRotationAxis: new THREE.Vector3(-1, 0, 1),
                 yellowSunSpeed: 0.001,
@@ -251,8 +256,6 @@
                 new THREE.MeshPhongMaterial({
                     color: new THREE.Color(laserParams.laserColor),
                     side: THREE.DoubleSide,
-                    // emissive: new THREE.Color("green"),
-                    // emissiveIntensity: 128,
                     transparent: true,
                     opacity: 0.5,
                     wireframe: true,
@@ -261,8 +264,6 @@
                 new THREE.MeshPhongMaterial({
                     color: new THREE.Color(laserParams.laserColor),
                     side: THREE.DoubleSide,
-                    // emissive: new THREE.Color("green"),
-                    // emissiveIntensity: 255.0,
                     transparent: true,
                     opacity: 0.75,
                 }),
@@ -480,7 +481,7 @@
                 explosion.add(waveMesh);
 
                 // Add illumination to the explosion:
-                var pointLight = makePointLight("lightyellow");
+                var pointLight = makePointLight(laserParams.laserColor);
                 pointLight.position.set(0, 0.5, 0);
                 explosion.add(pointLight);
 
@@ -517,8 +518,8 @@
              */
             function makeLaserLight() {
                 var laserLight = new THREE.DirectionalLight(
-                    new THREE.Color(buildingParams.laserColor), // color
-                    1 // intensity
+                    new THREE.Color(laserParams.laserColor), // color
+                    0.5 // intensity
                 );
                 // Since the light's target is automatically the origin, no target is needed.
                 return laserLight;
@@ -573,7 +574,7 @@
             var canvas = renderer.domElement;
             var parent = document.body.appendChild(canvas);
             renderer.setSize(canvas.clientWidth, canvas.clientHeight);
-            renderer.setClearColor(new THREE.Color(0x2f2f2f), 1);
+            renderer.setClearColor(new THREE.Color("salmon"), 1);
 
             // ----------------------------------------------------------------
             // Add camera:
@@ -683,10 +684,12 @@
                         explosionParams.visible = true;
                         if (explosionTime > 0) {
                             explosionTime -= 1;
-                            explosionParams.coreRadius = Math.pow(
-                                explosionParams.coreRadius,
-                                1.005
-                            );
+                            if (explosionParams.coreRadius <= 100) {
+                                explosionParams.coreRadius = Math.pow(
+                                    explosionParams.coreRadius,
+                                    1.005
+                                );
+                            }
                             updateExplosion();
                             return;
                         }
@@ -702,9 +705,10 @@
                 laserParams.laserMergeVisible = false; // Hide laser base.
                 laserParams.beamVisible = false; // Hide the main laser.
                 explosionParams.visible = false;
+                explosionParams.coreRadius = 16;
                 laserChargeTime = 100;
-                laserFireTime = 100;
-                explosionTime = 100;
+                laserFireTime = 50;
+                explosionTime = 200;
                 updateDeathStar();
                 updateExplosion();
             }
@@ -730,7 +734,6 @@
                 switch (key) {
                     case "0": // Default camera position. Obit controls enabled?
                         cameraParams.viewPoint = 0;
-
                         updateCamera();
                         console.log("Camera angle changed to viewpoint 0");
                         break;
@@ -768,6 +771,9 @@
                     case "f": // Fire the Death Star laser:
                         deathStarParams.isAnimated = true;
                         //updateDeathStar();
+                        break;
+                    case "r": // Reset the laser beam:
+                        resetLaserBeam();
                         break;
                 }
             });
