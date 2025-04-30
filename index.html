@@ -34,6 +34,7 @@
                 //cannonThetaStart: -0.3,
                 cannonThetaLength: -0.3, // Inverse of the theta start on the hull.
                 //cannonThetaLength: -Math.PI * 4,
+                isAnimated: false,
             };
             var laserParams = {
                 // cone base ( 8 merged lasers ):
@@ -41,16 +42,19 @@
                 laserMergeHeight: 4,
                 laserMergeRSegs: 8, // Radial segments
                 laserMergeOpenEnded: true,
+                laserMergeVisible: false,
                 // ----- laserBeam base: ----------
                 beamBaseRadius: 0.5,
                 // ----- laserbeam proper: --------
                 beamRadius: 0.25,
                 beamHeight:
                     Math.abs(deathStarParams.X) + Math.abs(deathStarParams.Z),
+                beamVisible: false,
             };
             var explosionParams = {
                 coreRadius: 8,
                 coreSegments: 32, // width segments
+                visible: false,
             };
             var pointLightParams = {
                 intensity: 1,
@@ -94,7 +98,7 @@
                 // 2. Material for the concave sphere / cannon of the Death Star
                 new THREE.MeshPhongMaterial({
                     color: new THREE.Color("grey"),
-                    side: THREE.DoubleSide,
+                    side: THREE.BackSide,
                 }),
                 // 3. Phong material used for the 8-laser base of the Death Star:
                 new THREE.MeshPhongMaterial({
@@ -132,6 +136,11 @@
                     emissiveIntensity: 0.5,
                     //transparent: true,
                     //opacity: 0.75,
+                }),
+                // 7. Material used for the band / ring of the Death Star.
+                new THREE.MeshPhongMaterial({
+                    color: new THREE.Color("grey"),
+                    side: THREE.FrontSide,
                 }),
             ];
 
@@ -344,7 +353,7 @@
                     1, // heightSegments
                     true // open-ended
                 );
-                var ringMesh = new THREE.Mesh(ringGeometry, sceneMaterials[2]);
+                var ringMesh = new THREE.Mesh(ringGeometry, sceneMaterials[7]);
                 ringMesh.rotation.set(Math.PI / 7, 0, 0);
 
                 // combine meshes into the death star:
@@ -392,6 +401,7 @@
                     sceneMaterials[3]
                 );
                 laserBaseMesh.position.set(0, params.laserMergeHeight / 2, 0);
+                laserBaseMesh.visible = laserParams.laserMergeVisible;
                 laser.add(laserBaseMesh);
 
                 // Add illumination to the merging lasers.
@@ -452,6 +462,7 @@
                     params.beamHeight / 2 + params.laserMergeHeight,
                     0
                 );
+                mainLaserMesh.visible = laserParams.beamVisible; // controls laser visibility.
                 laser.add(mainLaserMesh);
 
                 // Add illumination to the main laserbeam:
@@ -496,6 +507,9 @@
                 var pointLight = makePointLight("lightyellow");
                 pointLight.position.set(0, 0.5, 0);
                 explosion.add(pointLight);
+
+                // Check explosion visibility:
+                explosion.visible = explosionParams.visible;
 
                 // Return the completed explosion:
                 return explosion;
@@ -546,10 +560,23 @@
                 scene.remove(deathStar);
 
                 var params = deathStarParams;
+
+                scene.remove(deathStar);
+
+                deathStar = makeDeathStar(); // Re-generate the Death Star
+
                 deathStar.position.set(params.X, params.Y, params.Z);
                 deathStar.lookAt(0, 0, 0); // Lock Death Star to face origin point.
 
                 scene.add(deathStar);
+                render();
+            }
+
+            function updateExplosion() {
+                var params = explosionParams;
+                scene.remove(explosion);
+                explosion = makeExplosion();
+                scene.add(explosion);
                 render();
             }
 
@@ -601,6 +628,7 @@
 
             var explosion = makeExplosion();
             // scene.add(explosion);
+            scene.add(explosion);
 
             scene.add(createGroundScene(buildingParams, groundSceneMaterials));
             let orangeSun = createSun(
@@ -623,6 +651,7 @@
             // Render the complete scene.
             render();
 
+            // Animate the scene:
             function animate() {
                 requestAnimationFrame(animate);
 
@@ -637,7 +666,69 @@
                     buildingParams.yellowSunRotationAxis,
                     buildingParams.yellowSunSpeed
                 );
+
+                fireLaser();
+
                 render();
+            }
+
+            // Add parameters for firing the Death Star laser:
+
+            var laserChargeTime = 100;
+            var laserFireTime = 100;
+            var explosionTime = 100;
+
+            // Add functions for firing the Death Star laser:
+
+            function fireLaser() {
+                // check if the laserbeam is firing.
+                if (deathStarParams.isAnimated == true) {
+                    // Charge the laserbeam! Render the laser base / conjoining lasers:
+                    laserParams.laserMergeVisible = true; // render laser base.
+
+                    if (laserChargeTime > 0) {
+                        // wait.
+                        laserChargeTime -= 1;
+                        updateDeathStar();
+                        return;
+                    } else {
+                        // When the laser finishes charging. We need to fire the meain beam:
+                        // First, enable main laser visibility:
+                        laserParams.beamVisible = true; // render the main laser.
+                        // Give the laser a set amount of time to fire for:
+                        if (laserFireTime > 0) {
+                            laserFireTime -= 1;
+                            updateDeathStar();
+                            return;
+                        }
+                    }
+                    // Watch the firewors! Render the explosion and exponentially increase it's radius:
+                    if (laserFireTime <= 0) {
+                        explosionParams.visible = true;
+                        if (explosionTime > 0) {
+                            explosionTime -= 1;
+                            explosionParams.coreRadius = Math.pow(
+                                explosionParams.coreRadius,
+                                1.005
+                            );
+                            updateExplosion();
+                            return;
+                        }
+                    }
+
+                    // Reset animation:
+                    resetLaserBeam();
+                    console.log("Firing sequence complete");
+                }
+            }
+
+            function resetLaserBeam() {
+                deathStarParams.isAnimated = false;
+                laserParams.laserMergeVisible = false; // Hide laser base.
+                laserParams.beamVisible = false; // Hide the main laser.
+                laserChargeTime = 100;
+                laserFireTime = 100;
+                updateDeathStar();
             }
 
             animate();
@@ -684,6 +775,10 @@
                         deathStarParams.X += 10;
                         updateDeathStar();
                         updateCamera();
+                        break;
+                    case "f": // Fire the Death Star laser:
+                        deathStarParams.isAnimated = true;
+                        //updateDeathStar();
                         break;
                 }
             });
