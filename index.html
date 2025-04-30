@@ -48,6 +48,7 @@
                 // ----- laserbeam proper: --------
                 beamRadius: 0.25,
                 beamHeight: Math.abs(deathStarParams.X) + Math.abs(deathStarParams.Z),
+                beamVisible: false,
             };
             var explosionParams = {
                 coreRadius: 8,
@@ -288,8 +289,9 @@
                 mainLaserMesh.position.set(
                     0,
                     params.beamHeight / 2 + params.laserMergeHeight,
-                    0
+                    0,
                 );
+                mainLaserMesh.visible = laserParams.beamVisible; // controls laser visibility.
                 laser.add(mainLaserMesh);
 
                 // Add illumination to the main laserbeam:
@@ -382,9 +384,12 @@
              */
             function updateDeathStar() {
 
+                var params = deathStarParams;
+
                 scene.remove( deathStar );
 
-                var params = deathStarParams;
+                deathStar = makeDeathStar(); // Re-generate the Death Star
+
                 deathStar.position.set(params.X, params.Y, params.Z);
                 deathStar.lookAt(0, 0, 0); // Lock Death Star to face origin point.
 
@@ -601,8 +606,6 @@
             // Render the complete scene.
             render();
 
-            var laserCharge = 0;
-
             // Animate the scene:
             function animate() {
                 requestAnimationFrame( animate );
@@ -624,6 +627,12 @@
                 render();
             }
 
+            // Add parameters for firing the Death Star laser:
+
+            var laserCharge = 0;
+
+            // Add functions for firing the Death Star laser:
+
             function fireLaser() {
 
                 // check if the laserbeam is firing.
@@ -631,9 +640,10 @@
 
                     // Charge the laserbeam! Render the laser base / conjoining lasers:
                     laserParams.laserMergeVisible = true; // render laser base.
-                    if ( laserCharge < 50 ) { // wait.
+
+                    if ( laserCharge < 100 ) { // wait.
                         laserCharge += 1;
-                        console.log( "Reactor charging: " + laserCharge ); // TEST
+                        updateDeathStar();
                         return;
                     }
                     else {
@@ -695,7 +705,7 @@
                         break;
                     case "f": // Fire the Death Star laser:
                         deathStarParams.isAnimated = true;
-                        updateDeathStar();
+                        //updateDeathStar();
                         break;
                 }
             });
