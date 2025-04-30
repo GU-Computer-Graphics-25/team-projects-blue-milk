@@ -338,6 +338,9 @@
                 pointLight.position.set(0, 0.5, 0);
                 explosion.add(pointLight);
 
+                // Check explosion visibility:
+                explosion.visible = explosionParams.visible;
+
                 // Return the completed explosion:
                 return explosion;
             }
@@ -395,6 +398,14 @@
                 deathStar.lookAt(0, 0, 0); // Lock Death Star to face origin point.
 
                 scene.add( deathStar );
+                render();
+            }
+
+            function updateExplosion() {
+                var params = explosionParams;
+                scene.remove( explosion );
+                explosion = makeExplosion();
+                scene.add( explosion );
                 render();
             }
 
@@ -632,6 +643,7 @@
 
             var laserChargeTime = 100;
             var laserFireTime = 100;
+            var explosionTime = 100;
 
             // Add functions for firing the Death Star laser:
 
@@ -659,7 +671,16 @@
                         }
                     }
                     // Watch the firewors! Render the explosion and exponentially increase it's radius:
-
+                    if ( laserFireTime <= 0 ) {
+                        explosionParams.visible = true;
+                        if ( explosionTime > 0 ) {
+                            explosionTime -= 1;
+                            explosionParams.coreRadius = Math.pow( explosionParams.coreRadius, 1.005 );
+                            updateExplosion();
+                            return;
+                        }
+                       
+                    }
 
                     // Reset animation:
                     resetLaserBeam();
