@@ -9,6 +9,7 @@
         <script src="./js/three.js"></script>
         <script src="./js/OrbitControls.js"></script>
         <script src="./js/SceneUtils.js"></script>
+        <script src="./js/dat.gui.js"></script>
 
         <script src="./js/scene.js"></script>
         <script src="./js/utils.js"></script>
@@ -50,6 +51,15 @@
                 beamHeight:
                     Math.abs(deathStarParams.X) + Math.abs(deathStarParams.Z),
                 beamVisible: false,
+                laserColor: "lightgreen",
+                laserColorOptions: [
+                    "lightgreen",
+                    "red",
+                    "blue",
+                    "yellow",
+                    "black",
+                    "white",
+                ],
             };
             var explosionParams = {
                 coreRadius: 16,
@@ -82,67 +92,6 @@
             // ================================================================
             // Add materials:
             let loader = new THREE.TextureLoader();
-
-            var sceneMaterials = [
-                // 0. Material for Tatooine's desert floor.
-                new THREE.MeshPhongMaterial({
-                    color: new THREE.Color("tan"), // color
-                    side: THREE.DoubleSide, // sides
-                }),
-                // 1. Material for the death-star frame ("hull").
-                new THREE.MeshPhongMaterial({
-                    color: new THREE.Color("darkgrey"), // color
-                    side: THREE.FrontSide, // sides: show outside surface
-                    map: loader.load("./static/deathStar.png", render),
-                }),
-                // 2. Material for the concave sphere / cannon of the Death Star
-                new THREE.MeshPhongMaterial({
-                    color: new THREE.Color("grey"),
-                    side: THREE.BackSide,
-                }),
-                // 3. Phong material used for the 8-laser base of the Death Star:
-                new THREE.MeshPhongMaterial({
-                    color: new THREE.Color("lightgreen"),
-                    side: THREE.DoubleSide,
-                    emissive: new THREE.Color("green"),
-                    emissiveIntensity: 128,
-                    transparent: true,
-                    opacity: 0.5,
-                    wireframe: true,
-                }),
-                // 4. Phong material used for the main laserbeam of the Death Star:
-                new THREE.MeshPhongMaterial({
-                    color: new THREE.Color("lightgreen"),
-                    side: THREE.DoubleSide,
-                    emissive: new THREE.Color("green"),
-                    emissiveIntensity: 255.0,
-                    transparent: true,
-                    opacity: 0.75,
-                }),
-                // 5. Phong material used for the core of a explosion:
-                new THREE.MeshPhongMaterial({
-                    color: new THREE.Color("white"),
-                    side: THREE.DoubleSide,
-                    emissive: new THREE.Color("lightyellow"),
-                    emissiveIntensity: 0.5,
-                    //transparent: true,
-                    //opacity: 0.75,
-                }),
-                // 6. Phong material used for the shockwave of a explosion:
-                new THREE.MeshPhongMaterial({
-                    color: new THREE.Color("lightyellow"),
-                    side: THREE.DoubleSide,
-                    emissive: new THREE.Color("yellow"),
-                    emissiveIntensity: 0.5,
-                    //transparent: true,
-                    //opacity: 0.75,
-                }),
-                // 7. Material used for the band / ring of the Death Star.
-                new THREE.MeshPhongMaterial({
-                    color: new THREE.Color("grey"),
-                    side: THREE.FrontSide,
-                }),
-            ];
 
             const groundSceneMaterials = {
                 basePlate: new THREE.MeshPhongMaterial({
@@ -249,7 +198,7 @@
             };
 
             const buildingParams = {
-                basePlateWidth: 200,
+                basePlateWidth: 800,
 
                 centralBuildingTopRadius: 20,
                 centralBuildingBottomLength: 40,
@@ -281,30 +230,71 @@
                 yellowSunSpeed: 0.001,
             };
 
+            var sceneMaterials = [
+                // 0. Material for Tatooine's desert floor.
+                new THREE.MeshPhongMaterial({
+                    color: new THREE.Color("tan"), // color
+                    side: THREE.DoubleSide, // sides
+                }),
+                // 1. Material for the death-star frame ("hull").
+                new THREE.MeshPhongMaterial({
+                    color: new THREE.Color("darkgrey"), // color
+                    side: THREE.FrontSide, // sides: show outside surface
+                    map: loader.load("./static/deathStar.png", render),
+                }),
+                // 2. Material for the concave sphere / cannon of the Death Star
+                new THREE.MeshPhongMaterial({
+                    color: new THREE.Color("grey"),
+                    side: THREE.BackSide,
+                }),
+                // 3. Phong material used for the 8-laser base of the Death Star:
+                new THREE.MeshPhongMaterial({
+                    color: new THREE.Color(laserParams.laserColor),
+                    side: THREE.DoubleSide,
+                    // emissive: new THREE.Color("green"),
+                    // emissiveIntensity: 128,
+                    transparent: true,
+                    opacity: 0.5,
+                    wireframe: true,
+                }),
+                // 4. Phong material used for the main laserbeam of the Death Star:
+                new THREE.MeshPhongMaterial({
+                    color: new THREE.Color(laserParams.laserColor),
+                    side: THREE.DoubleSide,
+                    // emissive: new THREE.Color("green"),
+                    // emissiveIntensity: 255.0,
+                    transparent: true,
+                    opacity: 0.75,
+                }),
+                // 5. Phong material used for the core of a explosion:
+                new THREE.MeshPhongMaterial({
+                    color: new THREE.Color("white"),
+                    side: THREE.DoubleSide,
+                    emissive: new THREE.Color("lightyellow"),
+                    emissiveIntensity: 0.5,
+                    //transparent: true,
+                    //opacity: 0.75,
+                }),
+                // 6. Phong material used for the shockwave of a explosion:
+                new THREE.MeshPhongMaterial({
+                    color: new THREE.Color("lightyellow"),
+                    side: THREE.DoubleSide,
+                    emissive: new THREE.Color("yellow"),
+                    emissiveIntensity: 0.5,
+                    //transparent: true,
+                    //opacity: 0.75,
+                }),
+                // 7. Material used for the band / ring of the Death Star.
+                new THREE.MeshPhongMaterial({
+                    color: new THREE.Color("grey"),
+                    side: THREE.FrontSide,
+                }),
+            ];
+
             // ================================================================
             // Add functions:
             // ----------------------------------------------------------------
             // Object functions ( lights, meshes, etc. ):
-
-            /**
-             * MakePlain() creates a template plane geometry, which acts as the
-             * desert floor of our scene.
-             */
-            function makePlain() {
-                var params = plainParams;
-
-                var plainGeom = new THREE.PlaneGeometry(
-                    params.width,
-                    params.height,
-                    params.wSegments,
-                    params.hSegments
-                );
-                var plainMesh = new THREE.Mesh(plainGeom, sceneMaterials[0]);
-                // Adjust plain as needed:
-                plainMesh.rotation.set(Math.PI / 2, 0, 0);
-                // Return the completed plain:
-                return plainMesh;
-            }
 
             /**
              * function makeDeathStar() creates the death star, by generating
@@ -405,21 +395,21 @@
                 laser.add(laserBaseMesh);
 
                 // Add illumination to the merging lasers.
-                var baseLight = makePointLight("green");
+                var baseLight = makePointLight(buildingParams.laserColor);
                 baseLight.position.set(0, params.laserMergeHeight, 0);
                 laser.add(baseLight);
 
                 // Add conjoining point of all 8 lasers:
-                // var beamBaseGeom = new THREE.SphereGeometry(
-                //     params.beamBaseRadius,
-                //     16
-                // );
-                // var beamBaseMesh = new THREE.Mesh(
-                //     beamBaseGeom,
-                //     sceneMaterials[4]
-                // );
-                // beamBaseMesh.position.set(0, params.laserMergeHeight, 0);
-                // laser.add(beamBaseMesh);
+                var beamBaseGeom = new THREE.SphereGeometry(
+                    params.beamBaseRadius,
+                    16
+                );
+                var beamBaseMesh = new THREE.Mesh(
+                    beamBaseGeom,
+                    sceneMaterials[4]
+                );
+                beamBaseMesh.position.set(0, params.laserMergeHeight, 0);
+                laser.add(beamBaseMesh);
 
                 // Add a tracking point to the beam base, which will set where
                 // the user's camera will be positioned at for camera angle 2:
@@ -494,7 +484,7 @@
                 // Add the shockwave to the explosion:
                 var waveGeom = new THREE.RingGeometry(
                     params.coreRadius, // inner radius
-                    params.coreRadius * (params.coreRadius / 5), // outer radius
+                    Math.pow(params.coreRadius, 2) / 25,
                     32, // theta segments ( roundness )
                     1 // phi segemnts
                 );
@@ -541,7 +531,7 @@
              */
             function makeLaserLight() {
                 var laserLight = new THREE.DirectionalLight(
-                    new THREE.Color("green"), // color
+                    new THREE.Color(buildingParams.laserColor), // color
                     1 // intensity
                 );
                 // Since the light's target is automatically the origin, no target is needed.
@@ -735,6 +725,17 @@
 
             // ================================================================
             // Add camera controls:
+
+            let gui = new dat.GUI();
+
+            gui.add(
+                laserParams,
+                "laserColor",
+                laserParams.laserColorOptions
+            ).onChange(function (value) {
+                sceneMaterials[3].color.set(value);
+                sceneMaterials[4].color.set(value);
+            });
 
             document.addEventListener("keypress", (event) => {
                 const key = event.key;
