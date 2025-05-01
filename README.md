@@ -38,9 +38,24 @@ Our project scene features the following features:
 4. transparency:
    - Both the suns and laserbeam in our scene have transparent properties, which enhance the plasma-like nature of both objects.
 
-user interaction
-etc.
-animation
-etc.
-Some other feature - some other description/summary
-Resources Used and/or Referenced
+5. user interaction and controls:
+   - Our scene has mapped the following keys to specific actions:
+     - Pressing w,a,s, and d will move the Death Star.
+     - Pressing f will fire the Death Star's main laser.
+     - Pressing 0,1, and 2 will switch the camera angle.
+     - Pressing r will reset the Death Star firing animation.
+   - In addition to these controls. a gui has been added so that users may change the color of the laserbeam as they see fit* ( *colors are limited to 6. This battle station is NOT fully armed and operational )
+
+6. Animated elements:
+   - To enhance our lighting effects, the suns of Tatooine have been made to orbit the scene at seperate angles and speeds.
+   - The Death Star's main laser is animated in a three-part sequence:
+     - Charging the cannon with 8 conjoining lasers
+     - Firing the main laser
+     - Enveloping Mos Eisley in a firey ball of doom
+
+7. Texturing:
+   - Lastly, to really bring the whole project together, all of our buildings and the Death Star were given an extra layer of texturing, all of which were lovingly hand-crafted by our own team.
+
+## Resources Used and/or Referenced:
+
+
