@@ -19,20 +19,25 @@ Our scene is also fully interactible! A control scheme has been implemented to a
 
 ## Features Demonstrated:
 
-The following are features that demonstrated in this project scene:
+Our project scene features the following features:
 
-modeling, particularly hierarchical
-If this was used, here is a general description/summary of where this is implemented in the project scene.
-material, lighting and shading
-etc.
-changing camera position or shape
-etc.
-curved lines or surfaces
-etc.
-textures and texture-mapping
-etc.
-transparency
-etc.
+1. Hierarchical modeling:
+   - Our scene features several compound objects, particularily the Death Star, city, and laserbeam, which all feature nested meshes.
+   - In addition to these objects, our scene also features three extra spheres used for tracking light sources ( the red and yellow orbiting spheres are the suns, while the third covers the laserbeam's explosion ), and an extra plane for the desert floor.
+  
+2. Materials and lighting:
+   - All objects in our scene sport a meshPhongMateriaL, while our light sources and special effects have extra properties including emissive intensity and reflectivity.
+   - The city of tatooine has been mapped to support shadows casted by the twin suns as well.
+
+3. Dynamic camera angles:
+   - Our scene can be viewed from three distinct camera angles:
+     - Key “0”: A Suspended default view of Mos Eisley, AKA: default view
+     - Key “1”: Tatooine looking at the Death Star, AKA: ground view
+     - Key “2”: The Death Star looking at the City, AKA: birds eye view
+
+4. transparency:
+   - Both the suns and laserbeam in our scene have transparent properties, which enhance the plasma-like nature of both objects.
+
 user interaction
 etc.
 animation
