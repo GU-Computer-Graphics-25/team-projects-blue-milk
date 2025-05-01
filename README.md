@@ -2,12 +2,12 @@
 
 ## View the complete project here:
 
-[live demo.](https://gu-computer-graphics-25.github.io/team-projects-blue-milk/)
+[live demo](https://gu-computer-graphics-25.github.io/team-projects-blue-milk/)
 
 ## Project Summary:
 
 The link above showcases our completed project scene for CPSC 425, a technical showcase of our progress in understanding the core components of ThreeJ's graphical capabilities.
-Our scene depicts a fictional scene ripped straight from the hit franchise Star Wars, in which the titulat Death Star, a large space station capable of firing lasers, is seen attacking the small desert city of
+Our scene depicts a fictional scene ripped straight from the hit franchise *Star Wars*, in which the titulat Death Star, a large space station capable of firing lasers, is seen attacking the small desert city of
 Mos Eisley on the planet Tatooine.
 
 To emulate this fictional scene, we built our project around three main components:
@@ -40,10 +40,10 @@ Our project scene features the following features:
 
 5. user interaction and controls:
    - Our scene has mapped the following keys to specific actions:
-     - Pressing w,a,s, and d will move the Death Star.
-     - Pressing f will fire the Death Star's main laser.
-     - Pressing 0,1, and 2 will switch the camera angle.
-     - Pressing r will reset the Death Star firing animation.
+     - Pressing __w__,__a__,__s__, and __d__ will move the Death Star.
+     - Pressing __f__ will fire the Death Star's main laser.
+     - Pressing __0,1__, and __2__ will switch the camera angle.
+     - Pressing __r__ will reset the Death Star firing animation.
    - In addition to these controls. a gui has been added so that users may change the color of the laserbeam as they see fit* ( *colors are limited to 6. This battle station is NOT fully armed and operational )
 
 6. Animated elements:
@@ -57,5 +57,23 @@ Our project scene features the following features:
    - Lastly, to really bring the whole project together, all of our buildings and the Death Star were given an extra layer of texturing, all of which were lovingly hand-crafted by our own team.
 
 ## Resources Used and/or Referenced:
+
+The following sources and sites were referenced or adapted from in some way to help build out final scene:
+
+- Our project was built from a basic boiler-plate template HTML file, provided by VSCode. This can be best observed at the top of our Index.HTML file in the scripting setup:
+
+- While additional inspiration was drawn from course lecture notes and participation examples distributed in class, no major sections of code were directly copied. Files of particular use were:
+
+  [The helper functions from quiz 8: Animated Wedge Car](https://canvas.gonzaga.edu/courses/19968/assignments/195588?module_item_id=845874)
+
+  [The code used for rotating inside nested objects from IA2 - The Clown](https://canvas.gonzaga.edu/courses/19968/assignments/195553?module_item_id=845862)
+
+- The ThreeJs online handbook was consulted extensively for assistance in researching all aspects of the project, especially parameters for objects.
+
+  [Link to the ThreeJs website and database](https://threejs.org/)
+
+- The addFaceCoordinates function was pulled directly from the texture mapping quiz 7 on Canvas. See code lines 59 to 65 in Utils.js.
+
+  [Link to the quiz](https://canvas.gonzaga.edu/courses/19968/assignments/195584?module_item_id=845873)
 
 
